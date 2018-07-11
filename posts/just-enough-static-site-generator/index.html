@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="description" content="A description of a small python script as a static site generator">
+<link rel="icon" href="/blog/assets/favicon.ico" type="image/x-icon">
+
+<!-- Modified version of hack.css -->
+<link rel="stylesheet" href="/blog/assets/css/hack.css">
+
+<!-- Solarized color scheme -->
+<link rel="stylesheet" href="/blog/assets/css/solarized-light.min.css" ></link>
+
+<!-- Code syntax highlighting -->
+<link rel="stylesheet"
+      href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+
+<script
+src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<!-- Mathjax -->
+<script type="text/javascript" async
+  src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/latest.js?config=TeX-MML-AM_CHTML">
+</script>
+
+</head>
+
+<h1><a href="/blog/">Un peu de math</a></h1>
+<p>A description of a small python script as a static site generator</p>
+
+<body>
+<div class="main container">
+
+
+<h2> Just enough static site generator </h2>
+<h3> 2018-07-10 </h3>
+
+<hr />
+<p>I am a huge fan of static site generators. There are a number of fantastic
+static site generators around: <a href="https://jekyllrb.com/">jekyll</a> being one of the
+most used as it renders static files hosted via
+<a href="https://pages.github.com/">github pages</a>. Jekyll is written in
+<a href="https://www.ruby-lang.org/en/">Ruby</a> (a language I do not know at all) an there
+are a number of others, including many written in Python (I language I do know).
+On a number of occasions I've found myself not quite entirely happy with the
+various options and recently I've started just writing a short Python script to
+act that does the same job. In this post I'll describe the <strong>relatively</strong> few
+lines of Python required to make a static site generator.</p>
+<p><strong>TLDR</strong> All you need to create a static site generator is a small number of
+lightweight and awesome Python libraries. Here is the full file I'm about to
+describe <a href="blog/main.py"><code>main.py</code></a>.</p>
+<h3>What is a static site generator?</h3>
+<p>First things first: whilst most of the web is now powered by server based sites
+that take a request, access a database and serve the corresponding html on the
+fly a static site generator is used to do a one off read of all source files
+(the "data base") and generate all the html in one go.</p>
+<p>Most of these will for example, use the popular file format
+<a href="https://daringfireball.net/projects/markdown/syntax"><code>markdown</code></a> to write blog
+posts and convert them to html.</p>
+<p>As an example this blog post is written in markdown and is currently in a file
+in a directory called <code>src</code>:</p>
+<pre><code>|
+|---src/
+    |---2018-07-10-just-enough-static-site-generator.md
+</code></pre>
+<p>The first few lines of this file look like:</p>
+<pre><code>title: Just enough static site generator
+description: A description of a small python script as a static site generator
+---
+
+I am a huge fan of static site generators. There are a number of fantastic
+static site generators around: [jekyll](https://jekyllrb.com/) being one of the
+most used as it renders static files hosted via
+[github pages](https://pages.github.com/). Jekyll is written in
+[Ruby](https://www.ruby-lang.org/en/) (a language I do not know at all) an there
+are a number of others, including many written in Python (I language I do know).
+On a number of occasions I've found myself not quite entirely happy with the
+various options and recently I've started just writing a short Python script to
+act that does the same job. In this post I'll describe the **relatively** few
+lines of Python required to make a static site generator.
+
+**TLDR** All you need to create a static site generator is a small number of
+lightweight and awesome Python libraries. Here is the full file I'm about to
+describe [`main.py`](blog/main.py).
+
+### What is a static site generator?
+
+First things first: whilst most of the web is now powered by server based sites
+</code></pre>
+<p><strong>The first thing we need to be able to do is find all those files</strong></p>
+<h3>Using <code>Pathlib</code> to find all the markdown files</h3>
+<p><a href="https://docs.python.org/3/library/pathlib.html"><code>Pathlib</code></a> is a fantastic
+library that provide an abstraction to file systems (so things work on *nix and
+Windows for example).</p>
+<p>We can use <code>Pathlib</code> to easily find all the <code>.md</code> files in the <code>src</code> directory.
+Here is the first step of a python function <code>main</code> that does this, it
+essentially boils down to the <code>src_path.glob("*.md")</code> part.</p>
+<pre><code>def main(src_path=None, output_dir=None):
+    """
+    Read all the source directories
+    """
+    if src_path is None:
+        src_path = pathlib.Path("./src/")
+
+    if output_dir is None:
+        output_dir = pathlib.Path("./posts")
+
+    output_dir.mkdir(exist_ok=True)
+
+    posts = []
+    for post_path in reversed(list(src_path.glob("*.md"))):
+        post = read_file(path=post_path)
+        write_post(post=post, output_dir=output_dir)
+        posts.append(post)
+
+    html = render_template(
+        "home.html",
+        {
+            "blog_title": BLOGTITLE,
+            "posts": posts,
+            "root": ROOT,
+            "description": DESCRIPTION,
+        },
+    )
+    (output_dir.parent / "index.html").write_text(html)
+</code></pre>
+<p>You can see that there are two other functions being called inside the <code>for</code>
+loop:</p>
+<ul>
+<li><code>read_file</code></li>
+<li><code>write_post</code></li>
+</ul>
+<p><strong>Let us next look at reading in a given markdown file with <code>read_file</code>.</strong></p>
+<h3>Using <code>pyyaml</code> and <code>markdown</code> to read and convert markdown files to html</h3>
+<p>There are two stages to this <code>read_file</code> function:</p>
+<ol>
+<li>Getting all the information out of a <code>md</code> file.</li>
+<li>Putting it all together in a nice handy format.</li>
+</ol>
+<p>So here's what the <code>read_file</code> function looks like:</p>
+<pre><code>def read_file(path):
+    """
+    Return a Post object given a path to a blog post
+    """
+    stub = get_stub(path)
+    date = get_date(path)
+    content, metadata = get_content_and_metadata(path)
+    content = content.replace("blog", ROOT)
+    return Post(
+        stub=stub,
+        title=metadata["title"],
+        description=metadata.get("description", ""),
+        date=date,
+        content=content,
+        metadata=metadata,
+    )
+</code></pre>
+<p>The <code>get_stub</code> and <code>get_date</code> function just read directly from the file name
+which is now forced to always be of the form <code>&lt;date&gt;-&lt;stub&gt;.md</code>:</p>
+<pre><code>def get_stub(path):
+    """
+    Return the stem of a path.
+    """
+    return path.stem[len("yyyy-mm-dd-") :]
+
+
+def get_date(path):
+    """
+    Returns the date in ISO format at the start of the name of a directory
+    """
+    date_regex = "(19|20)\d\d[- ./](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])"
+    try:
+        return re.search(date_regex, path.stem[: len("yyyy-mm-dd")]).group()
+    except AttributeError:
+        return None
+</code></pre>
+<p>All of that just makes use of the <code>Pathlib</code> library but where things get
+interesting is the ability to get the preamble material at the top of a markdown
+file (technically speaking this is usually in a format called
+<a href="https://en.wikipedia.org/wiki/YAML"><code>yaml</code></a>). Here is the
+<code>get_content_and_metadata</code> function that does this:</p>
+<pre><code>def get_content_and_metadata(path, delimeter="---"):
+    """
+    Returns the html of a given markdown file
+    """
+    raw = path.read_text()
+    raw_metadata, md = raw[:raw.index(delimeter)], raw[raw.index(delimeter):]
+    metadata = yaml.load(raw_metadata)
+    return markdown.markdown(md), metadata
+</code></pre>
+<p>The first step is to split the file on the <code>delimeter</code> (<code>---</code>) which will be
+used to separate the <code>yaml</code> and <code>md</code> content. Then we use the <code>pyyaml</code> library
+to transform the <code>yaml</code> in to a python dictionary and the <code>markdown</code> library to
+transform the rest in to html.</p>
+<p>The last step of the <code>read_post</code> function is to return a <code>Post</code> instance. This
+is just a <code>namedtuple</code> which makes things simpler to manage at a later stage:</p>
+<pre><code>Post = collections.namedtuple(
+    "post", ["stub", "title", "description", "date", "content", "metadata"]
+)
+</code></pre>
+<p><strong>Next we write this html to files that will actually be accessed/read online</strong></p>
+<h3>Using <code>jinja2</code> to template how our site will look</h3>
+<p>The next part of the <code>main</code> function shown previously is to call the
+<code>write_post</code> function. This makes use of the very versatile <code>jinja2</code> library
+which makes using templates (so that we only need to write the structure of
+pages once) straightforward. <code>jinja2</code> is actually used by a number of other
+libraries but here we're using it "raw":</p>
+<pre><code>def write_post(post, output_dir):
+    """
+    Create the output directory and write the post
+    """
+    output_path = output_dir / f"./{post.stub}"
+    output_path.mkdir(exist_ok=True)
+    html = render_template(
+        "post.html",
+        {
+            "blog_title": BLOGTITLE,
+            "description": post.description,
+            "content": post.content,
+            "date": post.date,
+            "title": post.title,
+            "root": ROOT,
+        },
+</code></pre>
+<p>This function takes a <code>Post</code> instance (the named tuple shown before) and an
+output directory (I'll be using <code>posts</code> in my case) and then calls
+<code>render_template</code> which is where <code>jinja2</code> passes the information
+<code>post.content</code>, <code>post.date</code> etc to a template file <code>post.html</code>.</p>
+<p>Here is what <code>render_tempalte</code> looks like:</p>
+<pre><code>def render_template(template_file, template_vars, searchpath="./templates/"):
+    """
+    Render a jinja2 template
+    """
+    templateLoader = jinja2.FileSystemLoader(searchpath=searchpath)
+    template_env = jinja2.Environment(loader=templateLoader)
+    template = template_env.get_template(template_file)
+    return template.render(template_vars)
+</code></pre>
+<p>The <code>post.html</code> <code>jinja2</code> template looks like:</p>
+<pre><code>{% extends "base.html" %}
+
+
+{% block body %}
+&lt;h2&gt; {{title}} &lt;/h2&gt;
+&lt;h3&gt; {{date}} &lt;/h3&gt;
+
+{{content}}
+
+{% endblock %}
+</code></pre>
+<p>This is "extending" the <code>base.html</code> template where I've put a number of other
+things including css styling.</p>
+<p>The final part of <code>main.py</code> just passes all posts to another template
+<code>home.html</code> which aims to create the <a href="blog">landing page</a> of this blog post:</p>
+<pre><code>{% extends "base.html" %}
+
+{% block body %}
+
+&lt;ul&gt;
+    {% for post in posts %}
+    &lt;li&gt; &lt;a href="/blog/posts/{{post.stub}}"&gt;
+            {{post.title}}&lt;/a&gt; - {{post.date}} 
+        &lt;p&gt;{{post.description}}&lt;/p&gt;
+    &lt;/li&gt;
+    {% endfor %}
+&lt;/ul&gt;
+
+{% endblock %}
+</code></pre>
+<h3>Setting some details</h3>
+<p>The first few lines of the python file with all these functions in them has the
+imports and a few global variable settings:</p>
+<pre><code>import pathlib
+import re
+import collections
+
+import jinja2
+import markdown
+import yaml
+
+ROOT = "blog"
+BLOGTITLE = "Un peu de math"
+DESCRIPTION = """
+A blog about programming (usually scientific python), mathematics (game theory)
+and learning (usually student centred pedagogic approaches)."""
+</code></pre>
+<p><strong>Now we can render the site.</strong></p>
+<h3>Building the site and serving it locally thanks to the <code>http</code> library</h3>
+<p>To render the site we simply run <a href="/blog/main.py"><code>main.py</code></a>:</p>
+<pre><code>$ python main.py
+</code></pre>
+<p>This will create a number of <code>html</code> files in specific directories.</p>
+<p>If you want to see this site locally on your computer, python comes with a handy
+server right out of the box. Go to the parent directy and run it:</p>
+<pre><code>$ cd ..
+$ python -m http.server
+</code></pre>
+<p>Then go to your browser and type in <code>http://localhost:8000/</code>, you should see a
+number of directories there that should include the blog site too. Click on that
+and you get a nicely rendered webpage. Of course, because this site is entirely
+static you can also just inspect the various <code>html</code> files too.</p>
+<h3>Pushing to production!</h3>
+<p>My approach to "publishing" this site is to render locally, push to github and
+serve via github pages. In general this looks something like:</p>
+<pre><code>$ python main.py
+$ git add &lt;source-file.md&gt;
+$ git add posts/&lt;output-file.html&gt;
+$ git commit
+# Write commit message
+$ git push
+</code></pre>
+<p>I choose not to render my static sites (the <code>python main.py</code> part) using a
+continuous integration (CI) service, probably 50% laziness and 50% not wanting to add
+a tiny layer of complexity that could break, <strong>but</strong> that's possible to do.</p>
+<p>The <a href="/blog/test_main.py">test_main.py</a> file contains some unit tests and
+I do use (CI) to make sure that doesn't break and also to make sure that <code>python
+main.py</code> runs without failure.</p>
+<h3>Why do this?</h3>
+<p>If you are happy with any of the <strong>awesome</strong> static site generators out there
+you should not do this.</p>
+<p>I've just often found myself wanting to make slight tweaks and either not being
+willing to learn Ruby and not entirely satistfied with the tweaks that would
+have been required for the Python options.</p>
+<p>For example, <a href="https://vknight.org/">my personal "academic portfolio"</a> (if that's
+a thing?) site, uses a <code>yaml</code> database to render both the html and a latex/pdf
+CV.</p>
+
+
+
+    </div>
+</body>
+
+<hr>
+
+<div class="grid">
+    <div class="cell -8of12">
+        <div class="content">
+            <p>A description of a small python script as a static site generator</p>
+        </div>
+    </div>
+    <div class="cell -4of12">
+        <div class="content">
+            Source code: <a href="https://github.com/drvinceknight/blog">
+                          drvinceknight</a>
+        </div>
+        <div class="content">
+            Twitter: <a href="https://twitter.com/drvinceknight">
+                          @drvinceknight</a>
+        </div>
+        <div class="content">
+            Email: <a href="mailto:knightva@cardiff.ac.uk">
+                          knightva@cardiff.ac.uk</a>
+        </div>
+    </div>
+</div>
+</html>

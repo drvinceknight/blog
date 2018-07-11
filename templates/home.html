@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<!-- TODO: Remove this message -->
+<div class="card"> 
+    <div class="card-content">
+        <div class="inner">
+            I have recently moved my blog posts to this new location. My
+            previous posts can be found at <a
+             href="https://vknight.org/unpeudemath/">vknight.org/unpeudemath/</a>
+        </div>
+    </div>
+</div>
+
+<ul>
+    {% for post in posts %}
+    <li> <a href="/{{root}}/posts/{{post.stub}}">
+            {{post.title}}</a> - {{post.date}} 
+        <p>{{post.description}}</p>
+    </li>
+    {% endfor %}
+</ul>
+
+{% endblock %}
