@@ -19,5 +19,5 @@ install:
 
 script:
 
-  - pytest
+  - pytest --doctest-glob="*.md"
   - python main.py
