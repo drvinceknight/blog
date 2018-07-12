@@ -1,0 +1,37 @@
+name: blog
+channels:
+  - defaults
+dependencies:
+  - ca-certificates=2018.03.07
+  - certifi=2018.4.16
+  - libedit=3.1.20170329
+  - libffi=3.2.1
+  - libgcc-ng=7.2.0
+  - libstdcxx-ng=7.2.0
+  - ncurses=6.1
+  - openssl=1.0.2o
+  - pip=10.0.1
+  - python=3.6.6
+  - readline=7.0
+  - setuptools=39.2.0
+  - sqlite=3.24.0
+  - tk=8.6.7
+  - wheel=0.31.1
+  - xz=5.2.4
+  - zlib=1.2.11
+  - pip:
+    - atomicwrites==1.1.5
+    - attrs==18.1.0
+    - jinja2==2.10
+    - markdown==2.6.11
+    - markupsafe==1.0
+    - more-itertools==4.2.0
+    - pluggy==0.6.0
+    - py==1.5.4
+    - pyaml==17.12.1
+    - pyinvoke==1.0.2
+    - pytest==3.6.3
+    - pyyaml==3.13
+    - six==1.11.0
+prefix: /home/vince/anaconda3/envs/blog
+
