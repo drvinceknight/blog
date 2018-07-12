@@ -89,6 +89,7 @@ def write_post(post, output_dir):
             "date": post.date,
             "title": post.title,
             "root": ROOT,
+            "blog_description": DESCRIPTION,
         },
     )
 
@@ -119,7 +120,7 @@ def main(src_path=None, output_dir=None):
             "blog_title": BLOGTITLE,
             "posts": posts,
             "root": ROOT,
-            "description": DESCRIPTION,
+            "blog_description": DESCRIPTION,
         },
     )
     (output_dir.parent / "index.html").write_text(html)
