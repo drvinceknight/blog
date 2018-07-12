@@ -29,7 +29,6 @@ dependencies:
     - pluggy==0.6.0
     - py==1.5.4
     - pyaml==17.12.1
-    - pyinvoke==1.0.2
     - pytest==3.6.3
     - pyyaml==3.13
     - six==1.11.0
