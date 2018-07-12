@@ -19,5 +19,5 @@ install:
 
 script:
 
-  - inv test
-  - inv build
+  - pytest
+  - python main.py
