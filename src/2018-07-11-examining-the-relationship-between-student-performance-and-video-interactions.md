@@ -5,7 +5,7 @@ description: Reviewing a preprint looking at student performance vs interaction 
 This short post will give a brief overview describing my thoughts about a
 preprint that appeared recently entitled "Examining the relationship between
 student performance and video interactions":
-[https://arxiv.org/abs/1807.01912](arxiv.org/abs/1807.01912).
+[arxiv.org/abs/1807.01912](https://arxiv.org/abs/1807.01912).
 
 The paper tackles an interesting area of research and one that I was not fully
 aware of. One of the nice things about it, is the early paragraphs which
