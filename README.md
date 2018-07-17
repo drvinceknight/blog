@@ -9,8 +9,29 @@ covered:
 
 ## Render
 
-The course code of this blog is markdown files. To render the html:
+The course code of this blog is markdown files. A conda environment with all
+required code is include.
+
+To create the environment:
 
 ```
-python main.py
+$ conda env create -f environment.yml
+```
+
+To source the environment:
+
+```
+$ conda activate blog
+```
+
+To render the html:
+
+```
+$ inv main
+```
+
+To test all the (python) code written:
+
+```
+$ inv test
 ```
