@@ -3,7 +3,9 @@
  * with some modifications
  */
 
-.hack,
+.hack {
+  font-size: 120%;
+  },
 .hack h1,
 .hack h2,
 .hack h3,
@@ -15,7 +17,6 @@
 .hack em,
 .hack strong,
 .hack code {
-  font-size: 1rem;
   font-style: normal;
   font-family: Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
 }
