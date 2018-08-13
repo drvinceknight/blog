@@ -64,12 +64,6 @@
   margin: 0;
   overflow: hidden;
 }
-.hack h1:after {
-  content: "====================================================================================================";
-  position: absolute;
-  bottom: 10px;
-  left: 0;
-}
 .hack h1 + * {
   margin-top: 0;
 }
