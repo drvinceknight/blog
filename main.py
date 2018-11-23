@@ -6,8 +6,9 @@ import tempfile
 import jinja2
 import markdown
 import yaml
+import json
 
-from nbconvert import MarkdownExporter
+from nbconvert import HTMLExporter
 
 ROOT = "blog"
 BLOGTITLE = "Un peu de math"
@@ -43,7 +44,7 @@ def get_date(path):
         return None
 
 
-def get_content_and_metadata(path, delimeter="---"):
+def get_markdown_content_and_metadata(path, delimeter="---"):
     """
     Returns the html of a given markdown file
     """
@@ -52,19 +53,46 @@ def get_content_and_metadata(path, delimeter="---"):
     metadata = yaml.load(raw_metadata)
     return markdown.markdown(md), metadata
 
+def get_ipynb_content_and_metadata(path, delimeter="---"):
+    """
+    Returns the html of a given ipynb file
+    """
+    contents = path.read_text()
+    nb = json.loads(contents)
 
-def read_file(path, source_path=None):
+    cells = []
+    for cell in nb["cells"]:
+        if ("tags" not in cell["metadata"] or 
+            "post_metadata" not in cell["metadata"]["tags"] and
+            "ignore" not in cell["metadata"]["tags"]):
+            cells.append(cell)
+        elif "post_metadata" in cell["metadata"]["tags"]:
+            metadata = yaml.load("".join(cell["source"]))
+
+    nb["cells"] = cells
+
+    temporary_nb = tempfile.NamedTemporaryFile()
+    with open(temporary_nb.name, "w") as f:
+        f.write(json.dumps(nb))
+
+    html_exporter = HTMLExporter()
+    html_exporter.template_file = "basic"
+    return html_exporter.from_file(temporary_nb)[0], metadata
+
+
+
+def read_file(path):
     """
     Return a Post object given a path to a blog post
     """
     stub = get_stub(path)
     date = get_date(path)
-    if source_path is not None:
-        path = source_path
-    content, metadata = get_content_and_metadata(path)
+    if path.suffix == ".ipynb":
+        content, metadata = get_ipynb_content_and_metadata(path)
+    if path.suffix == ".md":
+        content, metadata = get_markdown_content_and_metadata(path)
+
     content = content.replace("{{root}}", ROOT)
-    content = content.replace("<p><code>", "<pre><code>")
-    content = content.replace("</code></p>", "</code></pre>")
     return Post(
         stub=stub,
         title=metadata["title"],
@@ -121,14 +149,7 @@ def main(src_path=None, output_dir=None):
 
     posts = []
     for post_path in reversed(list(src_path.glob("./*/main*"))):
-        source_path = None
-        if post_path.suffix == ".ipynb":
-            temporary_file = tempfile.NamedTemporaryFile()
-            markdown_exporter = MarkdownExporter()
-            markdown, _ = markdown_exporter.from_filename(post_path)
-            source_path = pathlib.Path(temporary_file.name)
-            source_path.write_text(markdown)
-        post = read_file(path=post_path, source_path=source_path)
+        post = read_file(path=post_path)
         write_post(post=post, output_dir=output_dir)
         posts.append(post)
 

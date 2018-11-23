@@ -21,7 +21,7 @@ def test_get_date():
     path = pathlib.Path(
         "./src/2018-07-10-just-enough-static-site-generator/main.md"
     )
-    html, metadata = main.get_content_and_metadata(path)
+    html, metadata = main.get_markdown_content_and_metadata(path)
     assert type(html) is str
     assert type(metadata) is dict
 
