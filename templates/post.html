@@ -10,4 +10,8 @@
 
 {{content}}
 
+{% if path %}
+    <a href=/{{root}}/{{path}}>{{filename}}</a>
+{% endif %}
+
 {% endblock %}
