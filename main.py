@@ -22,16 +22,20 @@ def get_stub(path):
     """
     Return the stem of a path.
     """
-    return path.stem[len("yyyy-mm-dd-") :]
+    date = get_date(path)
+    string = str(path.parent)
+    return string[string.index(date) + len("yyyy-mm-dd-"):]
 
 
 def get_date(path):
     """
     Returns the date in ISO format at the start of the name of a directory
     """
-    date_regex = "(19|20)\d\d[- ./](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])"
+    date_regex = (
+        "(19|20)\d\d[- ./](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])"
+    )
     try:
-        return re.search(date_regex, path.stem[: len("yyyy-mm-dd")]).group()
+        return re.search(date_regex, str(path)).group()
     except AttributeError:
         return None
 
@@ -109,7 +113,7 @@ def main(src_path=None, output_dir=None):
     output_dir.mkdir(exist_ok=True)
 
     posts = []
-    for post_path in reversed(list(src_path.glob("*.md"))):
+    for post_path in reversed(list(src_path.glob("./*/main.md"))):
         post = read_file(path=post_path)
         write_post(post=post, output_dir=output_dir)
         posts.append(post)
