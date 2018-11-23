@@ -1,10 +1,13 @@
 import pathlib
 import re
 import collections
+import tempfile
 
 import jinja2
 import markdown
 import yaml
+
+from nbconvert import MarkdownExporter
 
 ROOT = "blog"
 BLOGTITLE = "Un peu de math"
@@ -50,14 +53,18 @@ def get_content_and_metadata(path, delimeter="---"):
     return markdown.markdown(md), metadata
 
 
-def read_file(path):
+def read_file(path, source_path=None):
     """
     Return a Post object given a path to a blog post
     """
     stub = get_stub(path)
     date = get_date(path)
+    if source_path is not None:
+        path = source_path
     content, metadata = get_content_and_metadata(path)
     content = content.replace("{{root}}", ROOT)
+    content = content.replace("<p><code>", "<pre><code>")
+    content = content.replace("</code></p>", "</code></pre>")
     return Post(
         stub=stub,
         title=metadata["title"],
@@ -113,8 +120,15 @@ def main(src_path=None, output_dir=None):
     output_dir.mkdir(exist_ok=True)
 
     posts = []
-    for post_path in reversed(list(src_path.glob("./*/main.md"))):
-        post = read_file(path=post_path)
+    for post_path in reversed(list(src_path.glob("./*/main*"))):
+        source_path = None
+        if post_path.suffix == ".ipynb":
+            temporary_file = tempfile.NamedTemporaryFile()
+            markdown_exporter = MarkdownExporter()
+            markdown, _ = markdown_exporter.from_filename(post_path)
+            source_path = pathlib.Path(temporary_file.name)
+            source_path.write_text(markdown)
+        post = read_file(path=post_path, source_path=source_path)
         write_post(post=post, output_dir=output_dir)
         posts.append(post)
 
