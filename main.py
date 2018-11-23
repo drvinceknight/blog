@@ -18,7 +18,7 @@ A blog about programming (usually scientific python), mathematics
 approaches)."""
 
 Post = collections.namedtuple(
-    "post", ["stub", "title", "description", "date", "content", "metadata"]
+    "post", ["stub", "title", "description", "date", "content", "metadata", "path"]
 )
 
 
@@ -100,6 +100,7 @@ def read_file(path):
         date=date,
         content=content,
         metadata=metadata,
+        path=path,
     )
 
 
@@ -129,6 +130,8 @@ def write_post(post, output_dir):
             "title": post.title,
             "root": ROOT,
             "blog_description": DESCRIPTION,
+            "path": str(post.path),
+            "filename": str(post.path.name),
         },
     )
 
