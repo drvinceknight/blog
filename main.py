@@ -151,10 +151,12 @@ def main(src_path=None, output_dir=None):
     output_dir.mkdir(exist_ok=True)
 
     posts = []
-    for post_path in reversed(list(src_path.glob("./*/main*"))):
+    for post_path in src_path.glob("./*/main*"):
         post = read_file(path=post_path)
         write_post(post=post, output_dir=output_dir)
         posts.append(post)
+
+    posts.sort(key=lambda post: post.date, reverse=True)
 
     html = render_template(
         "home.html",
