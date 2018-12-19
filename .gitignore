@@ -8,3 +8,4 @@ __pycache__/
 *.log
 *.svg
 src/2018-11-26-galton-board/gif/*.pdf
+src/2018-12-19-continuous-time-markov-chains/data/main.csv
