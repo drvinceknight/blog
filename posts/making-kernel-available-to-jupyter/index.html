@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="">
+<meta name="description" content="A short post with the command needed to make a given kernel appear in Jupyter dropdown menu">
 
 <link rel="icon" href="/blog/assets/favicon.ico" type="image/x-icon">
 
@@ -51,62 +51,33 @@ MathJax.Hub.Config({
 </head>
 
 <h1><a href="/blog/">Un peu de math</a></h1>
-<p></p>
+<p>A short post with the command needed to make a given kernel appear in Jupyter dropdown menu</p>
 
 <body class="hack">
     <div class="main container">
 
 
+<h2> Making a kernel available to Jupyter </h2>
+<h3> 2019-05-06 </h3>
 
-<!-- TODO: Remove this message -->
-<div class="card"> 
-    <div class="card-content">
-        <div class="inner">
-            I have recently moved my blog posts to this new location. My
-            previous posts can be found at <a
-             href="https://vknight.org/unpeudemath/">vknight.org/unpeudemath/</a>
-        </div>
-    </div>
-</div>
+<hr />
+<p>This blog post is in the category of "write it down somewhere so I don't forget
+it" but it might be helpful to others.</p>
+<p>When I start my computer I run a Jupyter kernel from my home directory:</p>
+<p><code>$ jupyter notebook</code></p>
+<p>I am also a big fan of conda environments, essentially having an environment for
+any given research project.</p>
+<p>It is possible to make each and everyone of these environments available to
+Jupyter so that when you click on the <code>new</code> button you can decide which
+environment to use:</p>
+<p><img alt="" src="blog/src/2019-05-06-making-kernel-available-to-jupyter/img/dropdown_menu.png" /></p>
+<p>Having installed Jupyter in the <code>folk_theorem</code> environment, here is how you make
+that in the dropdown menu:</p>
+<p><code>python -m ipykernel install --user --name folk_theorem --display-name "Folk Theorem"</code></p>
 
-<ul>
-    
-    <li> <a href="/blog/posts/making-kernel-available-to-jupyter">
-            Making a kernel available to Jupyter</a> - 2019-05-06 
-        <p>A short post with the command needed to make a given kernel appear in Jupyter dropdown menu</p>
-    </li>
-    
-    <li> <a href="/blog/posts/testing-zd">
-            A (very reproducible) paper about recognising zero determinant strategies</a> - 2019-04-03 
-        <p>Describing a recent pre print and also pointing at the recognition it got for reproducibility.</p>
-    </li>
-    
-    <li> <a href="/blog/posts/continuous-time-markov-chains">
-            Comparing different methods for computing steady state probabilities of continuous time Markov chains using Python</a> - 2018-12-19 
-        <p>Continuous time Markov chains can be used to model a variety of systems, computing there steady state probabilities can be done a number of different ways.</p>
-    </li>
-    
-    <li> <a href="/blog/posts/galton-board">
-            Simulating a Galton board with Markov chains, eigenvalues and Python</a> - 2018-11-26 
-        <p>Use the stationary distribution of an absorbing markov chain to simulate a Galton board</p>
-    </li>
-    
-    <li> <a href="/blog/posts/zipping-iterators">
-            Iterating over many lists at the same time in Python with `zip`</a> - 2018-11-23 
-        <p>An overview of the awesome `zip` generator in Python.</p>
-    </li>
-    
-    <li> <a href="/blog/posts/examining-the-relationship-between-student-performance-and-video-interactions">
-            Review of an arxiv preprint about student interaction with video</a> - 2018-07-11 
-        <p>Reviewing a preprint looking at student performance vs interaction behaviour in video</p>
-    </li>
-    
-    <li> <a href="/blog/posts/just-enough-static-site-generator">
-            Just enough static site generator</a> - 2018-07-10 
-        <p>A description of a small python script as a static site generator</p>
-    </li>
-    
-</ul>
+
+    <a href=/blog/src/2019-05-06-making-kernel-available-to-jupyter/main.md>main.md</a>
+
 
 
 
