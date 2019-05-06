@@ -18,7 +18,7 @@ It is possible to make each and everyone of these environments available to
 Jupyter so that when you click on the `new` button you can decide which
 environment to use:
 
-![]({{root}}/src/2019-05-06-making-kernel-available-to-jupyter/img/dropdown_menu.png)
+![](/{{root}}/src/2019-05-06-making-kernel-available-to-jupyter/img/dropdown_menu.png)
 
 Having installed Jupyter in the `folk_theorem` environment, here is how you make
 that in the dropdown menu:
