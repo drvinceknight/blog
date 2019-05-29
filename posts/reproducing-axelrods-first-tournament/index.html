@@ -553,7 +553,7 @@ Analysing: 100%|██████████| 25/25 [00:02&lt;00:00,  9.38it/s
 <li>Implementation errors: this is unlikely as the strategies are all open source, documented and automatically tested. Furthermore they were peer reviewed so multiple developers have looked over and confirmed their source code. Finally, if this is the reason for the results not matching: <strong>this would be good news</strong>. The library is a prime example of open science. If anyone reading this cares to look through the source code of the implemented strategies and point out an error: <strong>they can</strong>.</li>
 </ul>
 <h2 id="Does-this-matter?">Does this matter?<a class="anchor-link" href="#Does-this-matter?">&#182;</a></h2><p>In some sense it's a slight pity that the results do not agree but an interesting question is whether or not this matters in terms of the conclusions made from Axelrod's paper.</p>
-<p>One of the most important claims of the paper was that to do one a strategy needs to be "simple" (this is a slight simplification in itself). The description of the new winner is:</p>
+<p>One of the most important claims of the paper was that to do well a strategy needs to be "simple" (this is a slight simplification in itself). The description of the new winner is:</p>
 <blockquote><p>Cooperate on the first two rounds and
 returns the opponent's last action for the next 5. For the rest of the game
 Grofman cooperates if both players selected the same action in the previous
@@ -562,7 +562,7 @@ round, and otherwise cooperates randomly with probability 2/7.</p>
 <p>whilst this is not as <strong>simple</strong> a strategy as Tit For Tat it is still a strategy that fundamentally wants to cooperate.</p>
 <h2 id="How-does-this-impact-the-&quot;emergence-of-cooperation&quot;">How does this impact the "emergence of cooperation"<a class="anchor-link" href="#How-does-this-impact-the-&quot;emergence-of-cooperation&quot;">&#182;</a></h2><p>Since Axelrod's work, one of the fundamental equations used to model the evolution of behaviour is the replicator dynamic equation:</p>
 $$
-    \frac{dx_i}{dt} = x_i((Ax)_i - xAx^T) \text{ for all }i
+    \frac{dx_i}{dt} = x_i((Ax)_i - x^TAx) \text{ for all }i
 $$<p>where:</p>
 <ul>
 <li>$x\in\mathbb{R}^{n}$ and $0 \leq x_i \leq 1$ represents the proportion of strategy $i$ in the population for all $1 \leq i \leq n$</li>
@@ -685,7 +685,7 @@ $$<p>where:</p>
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>We see that the top 8 ranking strategies (including Tit For Tat) all survive the evolutionary process.</p>
 <h2 id="Does-cooperation-still-emerge?">Does cooperation still emerge?<a class="anchor-link" href="#Does-cooperation-still-emerge?">&#182;</a></h2><p>If we consider $C\in\mathbb{R}^{n^2}$ where $0 \leq C_{ij} \leq 1$ denotes the cooperation rate of strategy $i$ against strategy $j$, then the average cooperation rate in the population is given by:</p>
-$$x C x^T$$<p>Let us compute this value for all time steps in the numerical simulation and see how cooperation changes over time:</p>
+$$x^T C x$$<p>Let us compute this value for all time steps in the numerical simulation and see how cooperation changes over time:</p>
 
 </div>
 </div>
@@ -734,6 +734,8 @@ $$x C x^T$$<p>Let us compute this value for all time steps in the numerical simu
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>As expected, over time, the cooperation rate tends to $1$ which implies that all the 8 top ranking strategies all essentially end up just cooperating with each other which confirms the <strong>emergence of cooperation</strong>.</p>
+<p><strong>Note</strong></p>
+<p>The source code from Axelrod's second tournament is available and we have revived that here: <a href="https://github.com/Axelrod-Python/axelrod-fortran">https://github.com/Axelrod-Python/axelrod-fortran</a>. It is worth noting that apart from some minor discrepancies the results of that tournament do reproduce (and Tit For Tat wins). <a href="https://www.owencampbell.me.uk">Owen Campbell</a> (one of the core developers of the Axelrod library) gave a talk about this at PyCon UK in 2017: <a href="https://www.youtube.com/watch?v=OSFCvv2wpOU">https://www.youtube.com/watch?v=OSFCvv2wpOU</a></p>
 
 </div>
 </div>
