@@ -1,7 +1,7 @@
 ---
 title: "computing-nash-equilibria-in-R"
 description: Using vertex enumeration to compute equilibria in R
-output: html_document
+output: md_document
 ---
 
 ```{r setup, include=FALSE}
@@ -76,7 +76,7 @@ takes 2 inputs `M, b` that define the Polytope in the general form as
 of payoff matrices.
 
 ```{r}
-get_linear_system_coeffients <- function(A){
+get_linear_system_coeffients <- function(A) {
   dimensions <- dim(A)
   number_of_row_strategies <- dimensions[2]
   positivity_constraints <- -diag(number_of_row_strategies)
@@ -101,7 +101,7 @@ get_linear_system_coeffients(A)
 We also need to get the right hand side vector:
 
 ```{r}
-get_linear_system_rhs <- function(A){
+get_linear_system_rhs <- function(A) {
   dimensions <- dim(A)
   number_of_col_strategies <- dimensions[1]
   number_of_row_strategies <- dimensions[2]
@@ -125,8 +125,8 @@ b <- get_linear_system_rhs(A)
 enumerate.vertices(M, b)
 ```
 
-For the column player we need to consider the transpose of \(B\) 
-(as all of the code we have written is from the perspective of the row player):
+For the row player we need to consider the transpose of \(B\) 
+(as all of the code we have written is from the perspective of the column player):
 
 ```{r}
 B <- rbind(c(2, 1), c(0, 3))
@@ -140,8 +140,8 @@ are binding) so let us write a function to do that:
 
 ```{r}
 library(berryFunctions)
-get_labels <- function(vertex, M, b){
-  almost.equal(M %*% vertex, b)
+get_labels <- function(vertex, M, b) {
+  almost.equal(c(M %*% vertex), b)
 }
 ```
 
@@ -154,70 +154,87 @@ get_labels(c(1 / 2, 0), M, b)
 We can now compute all vertices of a polytope and the corresponding labels:
 
 ```{r}
-get_vertices <- function(A){
+get_vertices <- function(A) {
   M <- get_linear_system_coeffients(A)
   b <- get_linear_system_rhs(A)
   vertices <- enumerate.vertices(M, b)
   vertices <- vertices[rowSums(vertices) != 0, ]
-  
-  labels <- t(apply(vertices, 1, function(vertex){get_labels(vertex, M, b)}))
+
+  labels <- t(apply(vertices, 1, function(vertex) {
+    get_labels(vertex, M, b)
+  }))
   cbind(vertices, labels)
 }
 ```
 
 ```{r}
-row_vertices <- get_vertices(A)
-col_vertices <- get_vertices(t(B))
+col_vertices <- get_vertices(A)
+row_vertices <- get_vertices(t(B))
+col_vertices
 ```
 
 ```{r}
-get_vertices(A)
+row_vertices
 ```
 
+Using all of the above, we can now consider two potential vertices, and their 
+labels and see if they form a fully labeled pair:
+
+
 ```{r}
-is_fully_labeled <- function(x, y, number_of_row_strategies, number_of_col_strategies){
-   dimension <- number_of_row_strategies + number_of_col_strategies
-   row_labels <- (x[-c(1:number_of_row_strategies)] %% dimension)
-   col_labels <- (y[-c(1:number_of_col_strategies)] + number_of_row_strategies) %% dimension
-   setequal(union(row_labels, col_labels), 0:(dimension - 1))
+is_fully_labeled <- function(x, y, number_of_row_strategies, number_of_col_strategies) {
+  dimension <- number_of_row_strategies + number_of_col_strategies
+  row_labels <- (which(x[-c(1:number_of_row_strategies)] > 0) %% dimension)
+  col_labels <- (which(y[-c(1:number_of_col_strategies)] > 0) + number_of_row_strategies) %% dimension
+  setequal(union(row_labels, col_labels), 0:(dimension - 1))
 }
 ```
 
 ```{r}
-x <- row_vertices[3,]
-y <- col_vertices[3,]
+x <- row_vertices[3, ]
+y <- col_vertices[3, ]
 is_fully_labeled(x, y, 2, 2)
 ```
 
 
 ```{r}
-x <- row_vertices[3,]
-y <- col_vertices[2,]
+x <- row_vertices[3, ]
+y <- col_vertices[2, ]
 is_fully_labeled(x, y, 2, 2)
 ```
+This gives us all the tools we need to iterate over all pairs of vertices and identify the fully labeled vertex pairs (and thus the Nash equilibria):
 
 ```{r}
-# TODO Use for loops and write a tibble
-obtain_nash_equilibra <- function(A, B){
+obtain_nash_equilibra <- function(A, B) {
   dimensions <- dim(A)
-  number_of_col_strategies <- dimensions[1]
-  number_of_row_strategies <- dimensions[2]
-  
-  row_vertices <- get_vertices(A)
-  col_vertices <- get_vertices(t(B))
+  number_of_row_strategies <- dimensions[1]
+  number_of_col_strategies <- dimensions[2]
+
+  row_vertices <- get_vertices(t(B))
+  col_vertices <- get_vertices(A)
   number_of_row_vertices <- dim(row_vertices)[1]
   number_of_col_vertices <- dim(col_vertices)[1]
 
   output <- c()
-  for (i in 1:number_of_row_vertices){
-    row_vertex_and_labels <- row_vertices[i,]
-    for (j in 1:number_of_col_vertices){
-      column_vertex_and_labels <- col_vertices[j,]
-      if (is_fully_labeled(x=row_vertex_and_labels, y=column_vertex_and_labels, number_of_row_strategies = number_of_row_strategies, number_of_col_strategies = number_of_col_strategies)){
+  for (i in 1:number_of_row_vertices) {
+    row_vertex_and_labels <- row_vertices[i, ]
+    for (j in 1:number_of_col_vertices) {
+      column_vertex_and_labels <- col_vertices[j, ]
+      if (is_fully_labeled(
+        x = row_vertex_and_labels,
+        y = column_vertex_and_labels,
+        number_of_row_strategies = number_of_row_strategies,
+        number_of_col_strategies = number_of_col_strategies
+      )) {
         row_vertex <- head(row_vertex_and_labels, number_of_row_strategies)
         row_strategy <- row_vertex / sum(row_vertex)
         column_vertex <- head(column_vertex_and_labels, number_of_col_strategies)
         column_strategy <- column_vertex / sum(column_vertex)
+        
+        max_size <- max(number_of_row_strategies, number_of_col_strategies)
+        length(row_strategy) <- max_size
+        length(column_strategy) <- max_size
+        
         output <- rbind(output, row_strategy, column_strategy)
       }
     }
@@ -225,40 +242,40 @@ obtain_nash_equilibra <- function(A, B){
   output
 }
 ```
+
 ```{r}
 ne <- obtain_nash_equilibra(A, B)
+ne
+```
+We see there that we have 3 Nash equilibria. We can confirm the output using the
+Python [nashpy](https://nashpy.readthedocs.io/) library:
+
+```{python engine.path="~/anaconda3/envs/gt/bin/python3.6"}
+import nashpy as nash
+import numpy as np
+A = np.array([[3, 1], [0, 2]])
+B = np.array([[2, 1], [0, 3]])
+game = nash.Game(A, B)
+for eq in game.vertex_enumeration():
+  print(eq)
 ```
 
-Experiments:
+We can experiment with a slightly larger game, for example here is rock 
+paper scissors:
 
 ```{r}
-rps <- rbind(c(2, 1, 3), c(3, 2, 1), c(1, 3, 2))
-get_vertices(rps)
-```
-```{r}
-rps <- rbind(c(2, 1, 3), c(3, 2, 1), c(1, 3, 2)) - 2
+rps <- rbind(c(0, -1, 1), c(1, 0, -1), c(-1, 1, 0))
 rps_row <- rps + 2
 rps_col <- -rps + 2
 ne <- obtain_nash_equilibra(rps_row, rps_col)
 ne
 ```
 
-## R Markdown
+And here is a non square game:
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+```{r}
+A <- rbind(c(3, 3), c(2, 5), c(0, 6))
+B <- rbind(c(3, 2), c(2, 6), c(3, 1))
+ne <- obtain_nash_equilibra(A, B)
+ne
 ```
-
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
