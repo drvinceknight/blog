@@ -74,32 +74,32 @@ library for that called <code>vertexenum</code>.</p>
 here is a brief outline:</p>
 <ul>
 <li>Consider a two player game defined by 
-  ((A, B)\in\mathbb{R}^{({m \times n})^2}) where (A) denotes the row 
+  \((A, B)\in\mathbb{R}^{({m \times n})^2}\) where \(A\) denotes the row 
   player's utilities and (B) the column player's utilities.</li>
 <li>Define the row player's best response polytope as:</li>
 </ul>
-<p>[
-  \mathcal{P} = \left{x\in\mathbb{R}^{m}\;|\;x\geq 0; xB\leq 1\right}
-  ]</p>
+<p>\[
+  \mathcal{P} = \left\{x\in\mathbb{R}^{m}\;|\;x\geq 0; xB\leq 1\right\}
+  \]</p>
 <ul>
 <li>Define the row player's best response polytope as:</li>
 </ul>
-<p>[
-  \mathcal{Q} = \left{y\in\mathbb{R}^{n}\;|\;Ay\leq 1; y\geq 0right}
-  ]</p>
+<p>\[
+  \mathcal{Q} = \left\{y\in\mathbb{R}^{n}\;|\;Ay\leq 1; y\geq 0\right\}
+  \]</p>
 <ul>
 <li>
-<p>Elements of (\mathcal{P}, \mathcal{Q}) are labelled by the defining 
-  inequalities for which they are binding. For example in (P) for (m=3) the 
-  vertex (x=(0,0,0)) would have labels (1, 2, 3) as the first 3 inequlities 
-  of (\mathcal{P}) are in fact equalities. In (Q) for (n=2) the  vertex 
-  (y=(0,0)) would have labels (4, 5) as the last 2 inequlities of 
-  (\mathcal{Q}) are in fact equalities.</p>
+<p>Elements of \(\mathcal{P}, \mathcal{Q}\) are labelled by the defining 
+  inequalities for which they are binding. For example in \(P\) for \(m=3\) the 
+  vertex \(x=(0,0,0)\) would have labels \(1, 2, 3\) as the first 3 inequlities 
+  of \(\mathcal{P}\) are in fact equalities. In \(Q\) for \(n=2\) the  vertex 
+  \(y=(0,0)\) would have labels \(4, 5\) as the last 2 inequlities of 
+  \(\mathcal{Q}\) are in fact equalities.</p>
 </li>
 <li>
-<p>Nash equilibria corresponds to pairs of vertices of (\mathcal{P}) and 
-  (\mathcal{Q}) for which the union of the labels give the full set of 
-  integers from (1) to (m + n). One such pair will always be the pair of 
+<p>Nash equilibria corresponds to pairs of vertices of \(\mathcal{P}\) and 
+  \(\mathcal{Q}\) for which the union of the labels give the full set of 
+  integers from \(1\) to \(m + n\). One such pair will always be the pair of 
   vertices with all values 0 (as in the previous bullet point)
   however this is a so called "artificial" equilibria.    </p>
 </li>
@@ -107,17 +107,17 @@ here is a brief outline:</p>
   that their elements sum to 1.</li>
 </ul>
 <p>Throughout this blog post we will use the following game as an example:</p>
-<p>[
+<p>\[
   A = \begin{pmatrix}
-    3 &amp; 1\
+    3 &amp; 1\\
     0 &amp; 2
     \end{pmatrix}
   \quad
   B = \begin{pmatrix}
-    2 &amp; 1\
+    2 &amp; 1\\
     0 &amp; 3
     \end{pmatrix}
-]</p>
+\]</p>
 <h3>Implementation of vertex enumeration in R.</h3>
 <p>We are going to make use of the <code>vertexenum</code> library which given a general 
 polytope will return all vertices. This library's function <code>enumerate.vertices</code> 
@@ -408,7 +408,7 @@ reference material on them.</p>
 <p>If you have any thoughts/improvement on the R code (I'm not terribly satisfied with how <code>obtain_nash_equilibria</code> is written for example), I'd welcome your thoughts: <a href="http://twitter.com/drvinceknight">@drvinceknight</a>.</p>
 
 
-    <a href=/blog//var/folders/qt/7gg5106n5d5brwzgk8gxc_xm0000gn/T/tmpboi4rn1f>tmpboi4rn1f</a>
+    <a href=/blog//var/folders/qt/7gg5106n5d5brwzgk8gxc_xm0000gn/T/tmp52kkzkrt>tmp52kkzkrt</a>
 
 
 
