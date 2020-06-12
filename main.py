@@ -101,9 +101,9 @@ def read_file(path):
     if path.suffix == ".Rmd":
         tempfile_md = tempfile.NamedTemporaryFile()
         subprocess.call(["R", "-e", f'knitr::knit("{path}", "{tempfile_md.name}")'])
-        path = pathlib.Path(tempfile_md.name)
+        temp_path = pathlib.Path(tempfile_md.name)
         content, metadata = get_markdown_content_and_metadata(
-            path, ignore_first_delimiter=True
+            temp_path, ignore_first_delimiter=True
         )
 
     content = content.replace("{{root}}", ROOT)
