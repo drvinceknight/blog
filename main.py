@@ -1,6 +1,7 @@
 import pathlib
 import re
 import collections
+import subprocess
 import tempfile
 
 import jinja2
@@ -28,30 +29,35 @@ def get_stub(path):
     """
     date = get_date(path)
     string = str(path.parent)
-    return string[string.index(date) + len("yyyy-mm-dd-"):]
+    return string[string.index(date) + len("yyyy-mm-dd-") :]
 
 
 def get_date(path):
     """
     Returns the date in ISO format at the start of the name of a directory
     """
-    date_regex = (
-        "(19|20)\d\d[- ./](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])"
-    )
+    date_regex = "(19|20)\d\d[- ./](0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])"
     try:
         return re.search(date_regex, str(path)).group()
     except AttributeError:
         return None
 
 
-def get_markdown_content_and_metadata(path, delimeter="---"):
+def get_markdown_content_and_metadata(
+    path, delimeter="---", ignore_first_delimiter=False
+):
     """
     Returns the html of a given markdown file
     """
     raw = path.read_text()
-    raw_metadata, md = raw[: raw.index(delimeter)], raw[raw.index(delimeter) :]
+    index_of_delimeter = raw.index(delimeter)
+    if ignore_first_delimiter is True:
+        index_of_delimeter += raw[index_of_delimeter + 1 :].index(delimeter)
+
+    raw_metadata, md = raw[:index_of_delimeter], raw[index_of_delimeter:]
     metadata = yaml.load(raw_metadata)
-    return markdown.markdown(md), metadata
+    return markdown.markdown(md, extensions=["fenced_code"]), metadata
+
 
 def get_ipynb_content_and_metadata(path, delimeter="---"):
     """
@@ -62,9 +68,11 @@ def get_ipynb_content_and_metadata(path, delimeter="---"):
 
     cells = []
     for cell in nb["cells"]:
-        if ("tags" not in cell["metadata"] or 
-            "post_metadata" not in cell["metadata"]["tags"] and
-            "ignore" not in cell["metadata"]["tags"]):
+        if (
+            "tags" not in cell["metadata"]
+            or "post_metadata" not in cell["metadata"]["tags"]
+            and "ignore" not in cell["metadata"]["tags"]
+        ):
             cells.append(cell)
         elif "post_metadata" in cell["metadata"]["tags"]:
             metadata = yaml.load("".join(cell["source"]))
@@ -80,7 +88,6 @@ def get_ipynb_content_and_metadata(path, delimeter="---"):
     return html_exporter.from_file(temporary_nb)[0], metadata
 
 
-
 def read_file(path):
     """
     Return a Post object given a path to a blog post
@@ -91,6 +98,13 @@ def read_file(path):
         content, metadata = get_ipynb_content_and_metadata(path)
     if path.suffix == ".md":
         content, metadata = get_markdown_content_and_metadata(path)
+    if path.suffix == ".Rmd":
+        tempfile_md = tempfile.NamedTemporaryFile()
+        subprocess.call(["R", "-e", f'knitr::knit("{path}", "{tempfile_md.name}")'])
+        path = pathlib.Path(tempfile_md.name)
+        content, metadata = get_markdown_content_and_metadata(
+            path, ignore_first_delimiter=True
+        )
 
     content = content.replace("{{root}}", ROOT)
     return Post(
