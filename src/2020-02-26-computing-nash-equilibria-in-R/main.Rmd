@@ -76,6 +76,10 @@ takes 2 inputs `M, b` that define the Polytope in the general form as
 of payoff matrices.
 
 ```{r}
+#' Returns the matrix M that corresponds to the column players best response
+#' polytope defined by the row players utility matrix A.
+#' 
+#' @param A The row players utility matrix.
 get_linear_system_coeffients <- function(A) {
   dimensions <- dim(A)
   number_of_row_strategies <- dimensions[2]
@@ -101,6 +105,10 @@ get_linear_system_coeffients(A)
 We also need to get the right hand side vector:
 
 ```{r}
+#' Returns the vector b that corresponds to the column players best response
+#' polytope defined by the row players utility matrix A.
+#' 
+#' @param A The row players utility matrix.
 get_linear_system_rhs <- function(A) {
   dimensions <- dim(A)
   number_of_col_strategies <- dimensions[1]
@@ -140,6 +148,12 @@ are binding) so let us write a function to do that:
 
 ```{r}
 library(berryFunctions)
+#' Returns the set of labels of a given vertex for the polytope defined
+#' by M and b.
+#' 
+#' @param vertex The vertex
+#' @param M The coefficient matrix defining the polytope
+#' @param b The right hand side vector defining the polytope
 get_labels <- function(vertex, M, b) {
   almost.equal(c(M %*% vertex), b)
 }
@@ -154,6 +168,16 @@ get_labels(c(1 / 2, 0), M, b)
 We can now compute all vertices of a polytope and the corresponding labels:
 
 ```{r}
+#' Returns the set of vertices and labels for the column player's best 
+#' response polytope.
+#' The format of the output is:
+#' 
+#' x_1 x_2 ... x_n B_1 B_2 ... B_(m+n)
+#'
+#' Where B_i is 0 (False) or 1 (True) dependent on whether or not the vector has
+#' label i.
+#' 
+#' @param A The row players utility matrix.
 get_vertices <- function(A) {
   M <- get_linear_system_coeffients(A)
   b <- get_linear_system_rhs(A)
@@ -182,7 +206,22 @@ labels and see if they form a fully labeled pair:
 
 
 ```{r}
-is_fully_labeled <- function(x, y, number_of_row_strategies, number_of_col_strategies) {
+#' Returns whether or not a given pair of vertices is fully labeled.
+#' Takes a vertex x in the following form:
+#' 
+#' x_1 x_2 ... x_n B_1 B_2 ... B_(m+n)
+#'
+#' Where B_i is 0 (False) or 1 (True) dependent on whether or not the vector has
+#' label i.
+#' 
+#' @param x A row player vertex
+#' @param y A column player vertex
+#' @param number_of_row_strategies  # TODO Remove this as an argument.
+#' @param number_of_col_strategies
+is_fully_labeled <- function(x,  
+                             y, 
+                             number_of_row_strategies, 
+                             number_of_col_strategies) {
   dimension <- number_of_row_strategies + number_of_col_strategies
   row_labels <- (which(x[-c(1:number_of_row_strategies)] > 0) %% dimension)
   col_labels <- (which(y[-c(1:number_of_col_strategies)] > 0) + number_of_row_strategies) %% dimension
@@ -205,6 +244,11 @@ is_fully_labeled(x, y, 2, 2)
 This gives us all the tools we need to iterate over all pairs of vertices and identify the fully labeled vertex pairs (and thus the Nash equilibria):
 
 ```{r}
+#' Return the nash equilibria for a two player game defined by utility matrices 
+#' A and B
+#'
+#' @param A The row player utility matrix
+#' @param B The column player utility matrix
 obtain_nash_equilibra <- function(A, B) {
   dimensions <- dim(A)
   number_of_row_strategies <- dimensions[1]
@@ -279,3 +323,9 @@ B <- rbind(c(3, 2), c(2, 6), c(3, 1))
 ne <- obtain_nash_equilibra(A, B)
 ne
 ```
+
+There are a number of other (**better**) algorithms for computing equilbria and
+the python [Nashpy](https://nashpy.readthedocs.io/) library document has
+reference material on them.
+
+If you have any thoughts/improvement on the R code (I'm not terribly satisfied with how `obtain_nash_equilibria` is written for example), I'd welcome your thoughts: [@drvinceknight](http://twitter.com/drvinceknight).
