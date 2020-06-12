@@ -1,6 +1,7 @@
 import pathlib
 import re
 import collections
+import subprocess
 import tempfile
 
 import jinja2
@@ -51,7 +52,7 @@ def get_markdown_content_and_metadata(path, delimeter="---"):
     raw = path.read_text()
     raw_metadata, md = raw[: raw.index(delimeter)], raw[raw.index(delimeter) :]
     metadata = yaml.load(raw_metadata)
-    return markdown.markdown(md), metadata
+    return markdown.markdown(md, extensions=['fenced_code']), metadata
 
 def get_ipynb_content_and_metadata(path, delimeter="---"):
     """
@@ -90,6 +91,11 @@ def read_file(path):
     if path.suffix == ".ipynb":
         content, metadata = get_ipynb_content_and_metadata(path)
     if path.suffix == ".md":
+        content, metadata = get_markdown_content_and_metadata(path)
+    if path.suffix == ".Rmd":
+        tempfile_md = tempfile.NamedTemporaryFile()
+        subprocess.call(["R", "-e", f'knitr::knit("{path}", "{tempfile_md.name}")'])
+        path = pathlib.Path(tempfile_md.name)
         content, metadata = get_markdown_content_and_metadata(path)
 
     content = content.replace("{{root}}", ROOT)
