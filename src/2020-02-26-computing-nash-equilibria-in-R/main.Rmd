@@ -1,5 +1,5 @@
 ---
-title: "computing-nash-equilibria-in-R"
+title: "Computing nash equilibria in R"
 description: Using vertex enumeration to compute equilibria in R
 output: md_document
 ---
@@ -291,18 +291,7 @@ obtain_nash_equilibra <- function(A, B) {
 ne <- obtain_nash_equilibra(A, B)
 ne
 ```
-We see there that we have 3 Nash equilibria. We can confirm the output using the
-Python [nashpy](https://nashpy.readthedocs.io/) library:
-
-```{python engine.path="~/anaconda3/envs/gt/bin/python3.6"}
-import nashpy as nash
-import numpy as np
-A = np.array([[3, 1], [0, 2]])
-B = np.array([[2, 1], [0, 3]])
-game = nash.Game(A, B)
-for eq in game.vertex_enumeration():
-  print(eq)
-```
+We see there that we have 3 Nash equilibria.
 
 We can experiment with a slightly larger game, for example here is rock 
 paper scissors:
