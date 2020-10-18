@@ -10,7 +10,7 @@ on:
 
 # This job installs dependencies, build the site, and pushes it to `gh-pages``
 jobs:
-  deploy-book:
+  deploy-site:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -24,7 +24,7 @@ jobs:
     - name: Set up R 4.0.3
       uses: r-lib/actions/setup-r@v1
       with:
-      r-version: '4.0.3'
+        r-version: 4.0.3
 
     - name: Install python and R dependencies
       run: |
