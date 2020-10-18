@@ -46,7 +46,7 @@ when the `main` branch is altered (this is my default branch) and push to the
 `gh-pages`
 branch which I have set to be served via github actions:
 
-<img src="/{{root}}/src/posts/2020-10-18-deploying-via-github-actions/img/screenshot/main.png" class="img-fluid" alt="Responsive image">
+<img src="./img/screenshot/main.png" class="img-fluid" alt="Responsive image">
 
 This setting is accessible via the specific repository's settings page.
 
