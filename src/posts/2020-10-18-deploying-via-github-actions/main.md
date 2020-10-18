@@ -19,6 +19,8 @@ LICENSE
 README.md
 _build/
 assets/
+|--- css/
+|--- img/
 blog-env/
 requirements.txt
 setup.R
@@ -46,12 +48,6 @@ when the `main` branch is altered (this is my default branch) and push to the
 `gh-pages`
 branch which I have set to be served via github actions:
 
-<img src="/{{root}}/assets/img/2020-10-18-deploying-via-github-actions/main.png" class="img-fluid" alt="Responsive image">
-
-This setting is accessible via the specific repository's settings page.
-
-Test.
-
 ```yml
 name: deploy
 
@@ -62,10 +58,11 @@ on:
     - main
     paths:
     - src/**
+    - assets/**
 
 # This job installs dependencies, build the site, and pushes it to `gh-pages``
 jobs:
-  deploy-book:
+  deploy:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -79,11 +76,16 @@ jobs:
     - name: Set up R 4.0.3
       uses: r-lib/actions/setup-r@v1
       with:
-      r-version: '4.0.3'
+        r-version: 4.0.3
 
-    - name: Install python and R dependencies
+    - name: Install python dependencies
       run: |
-        python -m invoke setup
+        python -m pip install -U pip
+        python -m pip install -r requirements.txt
+
+    - name: Install R dependencies
+      run: |
+        Rscript setup.R
 
     # Build the site
     - name: Build the site
@@ -98,11 +100,29 @@ jobs:
         publish_dir: ./_build/
 ```
 
-There are two bespoke tasks:
 
-- Install python and R dependencies: `python -m invoke setup`
+<img src="/{{root}}/assets/img/2020-10-18-deploying-via-github-actions/main.png"
+     class="img-fluid rounded mx-auto d-block"
+     width="75%">
+
+This setting is accessible via the specific repository's settings page.
+
+There are three bespoke tasks:
+
+- Install python dependencies: `python -m pip install -r requirements.txt`
+- Install R dependencies: `Rscript setup.R`
 - Build the site: `python -m invoke build`
 
-These make use of the python library `invoke` <http://www.pyinvoke.org> which is
-similar to `make` and allows me to abstract the specific tasks related to those
-two steps.  You can see these in the `tasks.py` file.
+This latter task makes use of the python library `invoke`
+<http://www.pyinvoke.org> which is similar to `make` and allows me to abstract
+the specific task of going through all the files in `posts`. Depending on the
+suffix (`.md`, `.ipynb` or `.Rmd`) the html file is built and moved to
+`_build`. Finally, all the `assets` (including images) are also moved to
+`_build`.
+
+The other tasks are all github actions that:
+
+- Install Python
+- Install R
+- Put the contents of `_build` on the `gh-pages` branch. Note that all other
+  files are not on that branch.
