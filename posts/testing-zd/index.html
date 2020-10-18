@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Describing a recent pre print and also pointing at the recognition it got for reproducibility.">
+
+<link rel="icon" href="/blog/assets/favicon.ico" type="image/x-icon">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+
+<!-- notebook css style -->
+  <link rel="stylesheet" href="/blog/assets/css/notebook.css">
+
+<!-- Code syntax highlighting -->
+<link rel="stylesheet"
+      href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+
+<script
+src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-38016329-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-38016329-2');
+</script>
+
+<!-- MathJax -->
+<script type="text/javascript" async
+src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"
+async>
+</script>
+<!-- MathJax configuration -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+        processEscapes: true,
+        processEnvironments: true
+    },
+    // Center justify equations in code and markdown cells. Elsewhere
+    // we use CSS to left justify single line equations in code cells.
+    displayAlign: 'center',
+    "HTML-CSS": {
+        styles: {'.MathJax_Display': {"margin": 0}},
+        linebreaks: { automatic: true }
+    }
+});
+</script>
+<!-- End of mathjax configuration -->
+</head>
+
+<body class="hack">
+    <div class="main container">
+
+<h1><a href="/blog/">Un peu de math</a></h1>
+
+<p>Describing a recent pre print and also pointing at the recognition it got for reproducibility.</p>
+
+
+
+<h2> A (very reproducible) paper about recognising zero determinant strategies </h2>
+<h3> 2019-04-03 </h3>
+
+<hr />
+<p>In <a href="https://www.pnas.org/content/109/26/10409">2012, Press and Dyson published a
+paper</a> that made quite a bit of noise
+in the Game Theoretic community. My favourite quote on the subject is from the
+<a href="https://www.technologyreview.com/s/428920/the-emerging-revolution-in-game-theory/">MIT Technology
+review</a>
+which claimed that "The world of game theory is currently on fire". In that
+paper, it was shown that a particular (simple) strategy could always do no worse
+than a given opponent. In this blog post I'll describe a preprint in which my
+authors and I describe a mathematical measure of how close any strategy is to
+acting this way but also describe some early recognition it has gotten, not for
+the results but for the reproducible nature of all the methodology.</p>
+<h3>Zero Determinant strategies</h3>
+<p><strong>The particular strategy considered in Press and Dyson's</strong> is referred to as a
+<strong>memory one</strong> strategy due to the fact that it only uses one turn of memory to
+decide what it does next. In other words, even if an interaction between two
+agents has been taking place for a long time with a long history of
+interactions, it will only consider the last turn of which (in the Prisoners
+Dilemma) there are only four possibilities:</p>
+<ol>
+<li>Both agents cooperate;</li>
+<li>The player in question cooperates and the opponent defects;</li>
+<li>The player in question defects and the opponent cooperates;</li>
+<li>Both agents defect.</li>
+</ol>
+<p><strong>Thus, all strategies that only use the last turn of memory to decide what they
+do can be represented as a single vector: \(p\in[0, 1]_{\mathbb{R}}^4\) which
+maps the previous state to a probability of cooperating.</strong></p>
+<p>For example, the famous strategy <a href="https://axelrod.readthedocs.io/en/stable/_modules/axelrod/strategies/titfortat.html#TitForTa://axelrod.readthedocs.io/en/stable/_modules/axelrod/strategies/titfortat.html#TitForTat">Tit For Tat</a> can be represented as:</p>
+<p>\[
+    p = (1, 0, 1, 0)
+\]</p>
+<p>What Press and Dyson did in their 2012 paper was show that given a match between
+two memory one players \(p, q\in[0, 1]_{\mathbb{R}}^4\) then one agent could
+force a linear relationship between the long run utilities of both agents
+(\(u_p, u_q\)). For the usual utility values of the Prisoner's Dilemma \(R,
+S, T, P\), <strong>if</strong>:</p>
+<p>\[
+    (1 - p_1, 1 - p_2, p_3, p_4) = \alpha (R, S, T, P) + \beta (R, T, S, P) +
+    \gamma
+\]</p>
+<p>and</p>
+<p>\[
+    \gamma = - P (\alpha + \beta)
+\]</p>
+<p><strong>then</strong>:</p>
+<p>\[
+    u_p - P = \frac{-\beta}{\alpha} (u_q - P)
+\]</p>
+<p>The important consideration here is that the only thing \(q\) can do to
+<em>defend</em> itself is to defect so that:</p>
+<p>\[
+    u_p = u_q = P
+\]</p>
+<p>Strategies that set this linear relationship are called <strong>Zero determinant</strong>
+strategies (because of the particular linear algebraic trick used to get the
+relationship).</p>
+<p>The other result, that's in the appendix of their paper is that a single turn
+of memory is all that is required <strong>against a given</strong> opponent.</p>
+<h3>Recognising Zero Determinant strategies</h3>
+<p>The main result of our preprint which is available at
+<a href="https://arxiv.org/abs/1904.00973">arxiv.org/abs/1904.00973</a> is to invert this
+relationship, given a history of plays of <strong>any</strong> strategy, it is possible to
+empirically measure \(p\) and then compute a <a href="https://en.wikipedia.org/wiki/Residual_sum_of_squares">sum of squared errors of
+prediction</a> (SSE) to see how
+far this empirical measure is from satisfying the above linear constraints.</p>
+<p>Further to this, we use the <a href="https://axelrod.readthedocs.io">Axelrod python
+library</a> with over 204 strategies to see how
+the distribution of this measure is related to the evolutionary performance of
+strategies. <strong>Our main finding</strong> is that simple memory one strategies are not
+evolutionarily strong (even when they are zero determinant) because they cannot
+adapt to a variety of opponents. Indeed strategies with a high skew in their SSE
+distribution are most likely to be evolutionarily strong as they can indeed
+extort poor performers but work well with high performers.</p>
+<p>This allowed us to include a cool quote by Darwin in the paper (hopefully the reviewers
+will agree):</p>
+<blockquote>
+<p>"It is not the most intellectual of the species that survives; it is not the
+strongest that survives; but the species that survives is the one that is able
+to adapt to and to adjust best to the changing environment in which it finds
+itself."</p>
+</blockquote>
+<h3>The pre print is reproducible</h3>
+<p>One of the cool things about the work, more so than <strong>what</strong> it is, is <strong>how</strong> it was
+done.</p>
+<p>First of all, it is of course all on github (and archived at zenodo):
+<a href="https://github.com/drvinceknight/testing_for_ZD">github.com/drvinceknight/testing_for_ZD</a>.</p>
+<p>Secondly you will see that the README includes a clean set of instruction of how
+to download the generated data (which is all archived at
+<a href="https://zenodo.org/record/1317619">10.5281/zenodo.1317619</a>) and rerun all the
+analysis. In fact, thanks to the neat <a href="http://www.pyinvoke.org">invoke</a> python
+library you can recreate all results by running the following (from the cloned
+repo directory):</p>
+<pre><code>$ conda env create -f environment.yml
+$ invoke data
+$ invoke build
+</code></pre>
+<p>The source code for the various calculations is packaged in a Python packaged
+which is all automatically tested. This implies that anyone can use the
+developed methodology on their own data with as little friction as possible.</p>
+<p>Each specific figure, table and in some cases number is all in it's own
+subdirectory with the source code to create it.</p>
+<p>As a result of putting this preprint on the arxiv, the following morning my
+co-authors and I got notified via <a href="https://twitter.com/assertpub_/status/1112963287141044226">a
+tweet</a> (FYI, they got
+my handle wrong but nbd :)) that a service called "assert" was featuring our
+paper as an example of reproducible research:
+<a href="http://assert.pub/papers/1904.00973">http://assert.pub/papers/1904.00973</a>.</p>
+<p>The description from their twitter bio:</p>
+<blockquote>
+<p>Papers are scored in real-time based on how reproducible they are (based on
+their Github repos) and how interesting they are (based on Twitter).</p>
+</blockquote>
+<p>Here's an image (from their twitter account) that shows what assert does:</p>
+<p><img alt="" src="https://pbs.twimg.com/media/DkoL3c0VAAIkNXu.png:large" /></p>
+<p>It looks like a clever service and one to keep an eye on:</p>
+<ul>
+<li><a href="http://assert.pub">http://assert.pub</a></li>
+<li><a href="https://twitter.com/assertpub_">https://twitter.com/assertpub_</a></li>
+</ul>
+
+
+    <a href=/blog/src/posts/2019-04-03-testing-zd/main.md>main.md</a>
+
+
+<script src="https://utteranc.es/client.js"
+        repo="drvinceknight/blog"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+
+
+
+<hr>
+
+            <p>
+A blog about programming (usually scientific python), mathematics
+(usually game theory) and learning (usually student centred pedagogic
+approaches).</p>
+            Source code: <a href="https://github.com/drvinceknight/blog">
+                          drvinceknight</a>
+            Twitter: <a href="https://twitter.com/drvinceknight">
+                          @drvinceknight</a>
+            Email: <a href="mailto:knightva@cardiff.ac.uk">
+                          knightva@cardiff.ac.uk</a>
+            Powered by:
+            <a href="https://www.python.org/">Python</a>
+            <a href="https://www.mathjax.org/">mathjax</a>
+            <a href="https://highlightjs.org/">highlight.js</a>
+            <a href="https://pages.github.com/">Github pages</a>
+    </div>
+</body>

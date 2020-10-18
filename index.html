@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="">
+
+<link rel="icon" href="/blog/assets/favicon.ico" type="image/x-icon">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+
+<!-- notebook css style -->
+  <link rel="stylesheet" href="/blog/assets/css/notebook.css">
+
+<!-- Code syntax highlighting -->
+<link rel="stylesheet"
+      href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+
+<script
+src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-38016329-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-38016329-2');
+</script>
+
+<!-- MathJax -->
+<script type="text/javascript" async
+src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"
+async>
+</script>
+<!-- MathJax configuration -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+        processEscapes: true,
+        processEnvironments: true
+    },
+    // Center justify equations in code and markdown cells. Elsewhere
+    // we use CSS to left justify single line equations in code cells.
+    displayAlign: 'center',
+    "HTML-CSS": {
+        styles: {'.MathJax_Display': {"margin": 0}},
+        linebreaks: { automatic: true }
+    }
+});
+</script>
+<!-- End of mathjax configuration -->
+</head>
+
+<body class="hack">
+    <div class="main container">
+
+<h1><a href="/blog/">Un peu de math</a></h1>
+
+<p></p>
+
+
+
+
+<ul>
+    
+    <li> <a href="./posts/deploying-via-github-actions">
+            Deploying a static site (built with R and Python) via github actions</a> - 2020-10-18 
+        <p>A post showing how to deploy a static site using github actions.</p>
+    </li>
+    
+    <li> <a href="./posts/computing-nash-equilibria-in-R">
+            Computing nash equilibria in R</a> - 2020-02-26 
+        <p>Using vertex enumeration to compute equilibria in R</p>
+    </li>
+    
+    <li> <a href="./posts/reproducing-axelrods-first-tournament">
+            Not reproducing Axelrod's first tournament</a> - 2019-05-24 
+        <p>Using the latest Axelrod release to (fail to) reproduce Axelrod's tournament but investigating the replicator dynamics to get similar results</p>
+    </li>
+    
+    <li> <a href="./posts/making-kernel-available-to-jupyter">
+            Making a kernel available to Jupyter</a> - 2019-05-06 
+        <p>A short post with the command needed to make a given kernel appear in Jupyter dropdown menu</p>
+    </li>
+    
+    <li> <a href="./posts/testing-zd">
+            A (very reproducible) paper about recognising zero determinant strategies</a> - 2019-04-03 
+        <p>Describing a recent pre print and also pointing at the recognition it got for reproducibility.</p>
+    </li>
+    
+    <li> <a href="./posts/continuous-time-markov-chains">
+            Comparing different methods for computing steady state probabilities of continuous time Markov chains using Python</a> - 2018-12-19 
+        <p>Continuous time Markov chains can be used to model a variety of systems, computing there steady state probabilities can be done a number of different ways.</p>
+    </li>
+    
+    <li> <a href="./posts/galton-board">
+            Simulating a Galton board with Markov chains, eigenvalues and Python</a> - 2018-11-26 
+        <p>Use the stationary distribution of an absorbing markov chain to simulate a Galton board</p>
+    </li>
+    
+    <li> <a href="./posts/zipping-iterators">
+            Iterating over many lists at the same time in Python with `zip`</a> - 2018-11-23 
+        <p>An overview of the awesome `zip` generator in Python.</p>
+    </li>
+    
+    <li> <a href="./posts/examining-the-relationship-between-student-performance-and-video-interactions">
+            Review of an arxiv preprint about student interaction with video</a> - 2018-07-11 
+        <p>Reviewing a preprint looking at student performance vs interaction behaviour in video</p>
+    </li>
+    
+    <li> <a href="./posts/just-enough-static-site-generator">
+            Just enough static site generator</a> - 2018-07-10 
+        <p>A description of a small python script as a static site generator</p>
+    </li>
+    
+</ul>
+
+
+
+<hr>
+
+            <p>
+A blog about programming (usually scientific python), mathematics
+(usually game theory) and learning (usually student centred pedagogic
+approaches).</p>
+            Source code: <a href="https://github.com/drvinceknight/blog">
+                          drvinceknight</a>
+            Twitter: <a href="https://twitter.com/drvinceknight">
+                          @drvinceknight</a>
+            Email: <a href="mailto:knightva@cardiff.ac.uk">
+                          knightva@cardiff.ac.uk</a>
+            Powered by:
+            <a href="https://www.python.org/">Python</a>
+            <a href="https://www.mathjax.org/">mathjax</a>
+            <a href="https://highlightjs.org/">highlight.js</a>
+            <a href="https://pages.github.com/">Github pages</a>
+    </div>
+</body>
