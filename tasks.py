@@ -185,10 +185,12 @@ def main(src_path=None, output_dir=None):
     )
     (output_dir.parent / "index.html").write_text(html)
 
+
 @task
 def setup(c):
     c.run("python -m pip install -r requirements.txt")
     c.run("Rscript setup.R")
+
 
 @task
 def test(c):
