@@ -187,12 +187,6 @@ def main(src_path=None, output_dir=None):
 
 
 @task
-def setup(c):
-    c.run("python -m pip install -r requirements.txt")
-    c.run("Rscript setup.R")
-
-
-@task
 def test(c):
     c.run("pytest --doctest-glob='*.md'")
 
