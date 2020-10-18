@@ -1,6 +1,5 @@
 name: write_static_files
 
-
 # Only run this when the main branch changes
 on:
   push:

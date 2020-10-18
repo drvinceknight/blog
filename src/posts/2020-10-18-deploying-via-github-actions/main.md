@@ -77,7 +77,7 @@ jobs:
     - name: Set up R 4.0.3
       uses: r-lib/actions/setup-r@v1
       with:
-      r-version: '4.0.3'
+        r-version: '4.0.3'
 
     - name: Install python and R dependencies
       run: |
