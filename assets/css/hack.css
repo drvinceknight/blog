@@ -1,0 +1,11 @@
+@import './vars';
+@import './mixins';
+@import './reset.css';
+@import './grid.css';
+@import './layout.css';
+@import './responsive.css';
+
+img {
+    width: 100%;
+    height: auto;
+}
