@@ -82,6 +82,8 @@ and this is what the structure looks like:</p>
 README.md
 _build/
 assets/
+|--- css/
+|--- img/
 blog-env/
 requirements.txt
 setup.R
@@ -107,9 +109,6 @@ tasks.py
 when the <code>main</code> branch is altered (this is my default branch) and push to the
 <code>gh-pages</code>
 branch which I have set to be served via github actions:</p>
-<p><img src="/blog/assets/img/2020-10-18-deploying-via-github-actions/main.png" class="img-fluid" alt="Responsive image"></p>
-<p>This setting is accessible via the specific repository's settings page.</p>
-<p>Test.</p>
 <pre><code class="yml">name: deploy
 
 # Only run this when the main branch changes
@@ -119,10 +118,11 @@ on:
     - main
     paths:
     - src/**
+    - assets/**
 
 # This job installs dependencies, build the site, and pushes it to `gh-pages``
 jobs:
-  deploy-book:
+  deploy:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -136,11 +136,16 @@ jobs:
     - name: Set up R 4.0.3
       uses: r-lib/actions/setup-r@v1
       with:
-      r-version: '4.0.3'
+        r-version: 4.0.3
 
-    - name: Install python and R dependencies
+    - name: Install python dependencies
       run: |
-        python -m invoke setup
+        python -m pip install -U pip
+        python -m pip install -r requirements.txt
+
+    - name: Install R dependencies
+      run: |
+        Rscript setup.R
 
     # Build the site
     - name: Build the site
@@ -155,18 +160,29 @@ jobs:
         publish_dir: ./_build/
 </code></pre>
 
-<p>There are two bespoke tasks:</p>
+<p><img src="/blog/assets/img/2020-10-18-deploying-via-github-actions/main.png"
+     class="img-fluid rounded mx-auto d-block"
+     width="75%"></p>
+<p>This setting is accessible via the specific repository's settings page.</p>
+<p>There are three bespoke tasks:</p>
 <ul>
-<li>Install python and R dependencies: <code>python -m invoke setup</code></li>
+<li>Install python dependencies: <code>python -m pip install -r requirements.txt</code></li>
+<li>Install R dependencies: <code>Rscript setup.R</code></li>
 <li>Build the site: <code>python -m invoke build</code></li>
 </ul>
-<p>These make use of the python library <code>invoke</code> <a href="http://www.pyinvoke.org">http://www.pyinvoke.org</a> which is
-similar to <code>make</code> and allows me to abstract the specific tasks related to those
-two steps.  You can see these in the <code>tasks.py</code> file.</p>
-
-
-    <a href=/blog/src/posts/2020-10-18-deploying-via-github-actions/main.md>main.md</a>
-
+<p>This latter task makes use of the python library <code>invoke</code>
+<a href="http://www.pyinvoke.org">http://www.pyinvoke.org</a> which is similar to <code>make</code> and allows me to abstract
+the specific task of going through all the files in <code>posts</code>. Depending on the
+suffix (<code>.md</code>, <code>.ipynb</code> or <code>.Rmd</code>) the html file is built and moved to
+<code>_build</code>. Finally, all the <code>assets</code> (including images) are also moved to
+<code>_build</code>.</p>
+<p>The other tasks are all github actions that:</p>
+<ul>
+<li>Install Python</li>
+<li>Install R</li>
+<li>Put the contents of <code>_build</code> on the <code>gh-pages</code> branch. Note that all other
+  files are not on that branch.</li>
+</ul>
 
 <script src="https://utteranc.es/client.js"
         repo="drvinceknight/blog"
