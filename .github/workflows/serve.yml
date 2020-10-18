@@ -1,4 +1,4 @@
-name: serve-site
+name: serve
 
 # Only run this when the main branch changes
 on:
@@ -8,7 +8,7 @@ on:
 
 # This job installs dependencies, build the site, and pushes it to `gh-pages``
 jobs:
-  serve-site:
+  serve:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2

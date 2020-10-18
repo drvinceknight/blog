@@ -1,8 +1,8 @@
 import collections
+import distutils.dir_util
 import json
 import pathlib
 import re
-import shutil
 import subprocess
 import tempfile
 
@@ -194,4 +194,4 @@ def test(c):
 @task
 def build(c):
     main()
-    shutil.copytree(src="assets", dst="./_build/assets")
+    distutils.dir_util.copy_tree(src="assets", dst="./_build/assets")
