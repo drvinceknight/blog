@@ -1,4 +1,4 @@
-name: serve
+name: serve-site
 
 # Only run this when the main branch changes
 on:
