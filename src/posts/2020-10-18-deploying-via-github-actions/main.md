@@ -5,14 +5,16 @@ description: A post showing how to deploy a static site using github actions.
 This blog is a static site with source files written in markdown, Jupyter or R
 markdown. Up until this post I have always generated the html locally and push
 that to github which in turn serves the pages using Github pages:
-https://pages.github.com
+<https://pages.github.com>.
 
 In this blog post I will describe how to use Github Actions
-https://github.com/features/actions to not only build the static files but also
+<https://github.com/features/actions> to not only build the static files but also
 deploy them.
 
-The repo for this blog is available here: https://github.com/drvinceknight/blog
+The repo for this blog is available here:
+<https://github.com/drvinceknight/blog>
 and this is what the structure looks like:
+
 
 ```bash
 LICENSE
