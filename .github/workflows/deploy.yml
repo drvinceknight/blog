@@ -1,14 +1,17 @@
-name: serve
+name: deploy
 
 # Only run this when the main branch changes
 on:
   push:
     branches:
     - main
+    paths:
+    - src/**
+    - assets/**
 
 # This job installs dependencies, build the site, and pushes it to `gh-pages``
 jobs:
-  serve:
+  deploy:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
