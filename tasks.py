@@ -1,15 +1,14 @@
-from invoke import task
+import collections
+import json
 import pathlib
 import re
-import collections
 import subprocess
 import tempfile
 
 import jinja2
 import markdown
 import yaml
-import json
-
+from invoke import task
 from nbconvert import HTMLExporter
 
 ROOT = "blog"
