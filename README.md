@@ -15,23 +15,23 @@ required code is include.
 To create the environment:
 
 ```
-$ conda env create -f environment.yml
+$ python -m venv blg-env
 ```
 
 To source the environment:
 
 ```
-$ conda activate blog
+$ source blog-env/bin/activate
+```
+
+To install the Python and R dependencies.
+
+```
+$ python -m invoke setup
 ```
 
 To render the html:
 
 ```
-$ inv main
-```
-
-To test all the (python) code written:
-
-```
-$ inv test
+$ inv build
 ```
