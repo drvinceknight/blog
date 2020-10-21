@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="A post showing how to use aspell and github actions to check spelling.">
+
+<link rel="icon" href="/blog/assets/favicon.ico" type="image/x-icon">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+
+<!-- notebook css style -->
+  <link rel="stylesheet" href="/blog/assets/css/notebook.css">
+
+<!-- Code syntax highlighting -->
+<link rel="stylesheet"
+      href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+
+<script
+src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-38016329-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-38016329-2');
+</script>
+
+<!-- MathJax -->
+<script type="text/javascript" async
+src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"
+async>
+</script>
+<!-- MathJax configuration -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+        processEscapes: true,
+        processEnvironments: true
+    },
+    // Center justify equations in code and markdown cells. Elsewhere
+    // we use CSS to left justify single line equations in code cells.
+    displayAlign: 'center',
+    "HTML-CSS": {
+        styles: {'.MathJax_Display': {"margin": 0}},
+        linebreaks: { automatic: true }
+    }
+});
+</script>
+<!-- End of mathjax configuration -->
+</head>
+
+<body class="hack">
+    <div class="main container">
+
+<h1><a href="/blog/">Un peu de math</a></h1>
+
+<p>A post showing how to use aspell and github actions to check spelling.</p>
+
+
+
+<h2> Setting up a spell checker for LaTeX (or anything really) via github actions </h2>
+<h3> 2020-10-21 </h3>
+
+<hr />
+<p>This post will describe using <code>aspell</code> <a href="http://aspell.net">http://aspell.net</a> (a free and open
+source spell checker), a bit of python glue and github actions to setup
+spell checking for LaTeX documents (although this can be used to spell check
+other document types as well). We will also add a check that confirms the LaTeX
+syntax compiles.</p>
+<p>Let us start with a directory with the following structure:</p>
+<pre><code class="bash">README.md
+|--- tex/
+    |--- README.md
+    |--- main.tex
+</code></pre>
+
+<p>We will use that <code>tex</code> directory to keep all our LaTeX apart from the rest of
+the repository (and specifically some of the glue we need to get github actions
+to work).</p>
+<p>The <code>README.md</code> files are not necessary for this but a good thing to have
+to document the contents of a directory.</p>
+<h2>Using <code>aspell</code></h2>
+<p>We are going to use <code>aspell</code> as the spell checker. Installation instructions are
+available at <a href="http://aspell.net">http://aspell.net</a>. It is both <code>brew</code> (macOS) and <code>apt</code> (ubuntu)
+installable:</p>
+<pre><code class="bash">$ brew instal aspell
+</code></pre>
+
+<p>If we want to run the spellchecker on the LaTeX documents we run:</p>
+<pre><code class="bash">$ aspell -t list &lt; tex/*.tex
+</code></pre>
+
+<ul>
+<li>The <code>-t</code> ensures aspell filters out various LaTeX commands.</li>
+<li><code>list</code> ensures that all misspelt words are just listed to screen.</li>
+<li><code>tex/**.tex</code> will go through all subdirectories of <code>tex</code> and find the <code>.tex</code>
+  files.</li>
+</ul>
+<p><strong>Whether or not there are misspelt words the exit code for that command will
+always be 0.</strong></p>
+<p>You can confirm this by running:</p>
+<pre><code class="bash">$ echo $?
+</code></pre>
+
+<p>A good tutorial/explanation of exit codes is
+<a href="https://shapeshed.com/unix-exit-codes/">https://shapeshed.com/unix-exit-codes/</a> but when we start using github actions
+a 0 exit code will be displayed with a big green tick and everything will be
+assumed fine. What we want is for a non zero exit code to be returned when there
+is any misspelt word. We will use some python glue for this.</p>
+<h2>Some Python glue</h2>
+<p>First of all we will create a python file <code>known.py</code> in the root of our
+directory with a <code>set</code> of extra known words (I'm pretty sure the dictionary
+<code>aspell</code> uses does not know about <code>TikTok</code> for example).</p>
+<pre><code class="python">words = {&quot;TikTok&quot;}
+</code></pre>
+
+<p><code>aspell</code> does directly have functionality to add a custom list of words but this
+approach has proven to have further benefits in my use cases (I won't go over
+those now).</p>
+<p>We will now use the Python library <code>invoke</code> <a href="http://www.pyinvoke.org">http://www.pyinvoke.org</a> which can
+be used to create a set of tasks to be run.</p>
+<p>First we add <code>invoke</code> to a <code>requirements.txt</code> file to make a note of it as a
+dependency:</p>
+<pre><code>invoke&gt;=1.4.1
+</code></pre>
+
+<p>There I am choosing to specify the lower bound of the version to use but you
+could be more or indeed less specific if you wanted.</p>
+<p>We now write a <code>tasks.py</code> file which will include all the instructions to run
+<code>aspell</code> on the <code>tex</code> files but also return a non zero exit code if a word is
+not spelt correctly.</p>
+<pre><code class="python">import subprocess
+import pathlib
+import sys
+
+from invoke import task
+
+import known
+
+def get_files_to_check():
+    &quot;&quot;&quot;
+    A generator that returns paths of latex files.
+
+    Note that this could be extended to yield other files as necessary.
+    &quot;&quot;&quot;
+    for path in pathlib.Path(&quot;tex/&quot;).glob(&quot;*.tex&quot;):
+        yield path
+
+
+@task
+def spellcheck(c):
+    &quot;&quot;&quot;
+    Run the book through a spell checker.
+
+    Known exceptions are in `known.py`
+    &quot;&quot;&quot;
+    exit_code = 0
+
+    for tex_path in get_files_to_check():
+
+        tex = tex_path.read_text()
+        aspell_output = subprocess.check_output(
+            [&quot;aspell&quot;, &quot;-t&quot;, &quot;--list&quot;, &quot;--lang=en_GB&quot;], input=tex, text=True
+        )
+        incorrect_words = set(aspell_output.split(&quot;\n&quot;)) - {&quot;&quot;} - known.words
+        if len(incorrect_words) &gt; 0:
+            print(f&quot;In {tex_path} the following words are not known: &quot;)
+            for string in sorted(incorrect_words):
+                print(string)
+            exit_code = 1
+
+    sys.exit(exit_code)
+</code></pre>
+
+<p>We can now run:</p>
+<pre><code class="bash">$ inv spellcheck
+</code></pre>
+
+<p>And this will not only return a list of misspelt words but also have the correct
+exit code as necessary.</p>
+<h2>The full directory</h2>
+<p>The final directory will look like:</p>
+<pre><code class="bash">README.md
+|--- tex/
+    |--- README.md
+    |--- main.tex
+|... .github/
+    |--- workflows/
+        |--- prose.yml
+know.py
+tasks.py
+requirements.txt
+</code></pre>
+
+<h2>The github actions configuration file</h2>
+<p>The final step is to write a configuration file with instructions for the
+commands to be run by Github Actions whenever we want it to check what we have
+committed.</p>
+<p>In <code>.github/workflows</code> we put a <code>prose.yml</code> file:</p>
+<pre><code>name: Test prose
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+
+    runs-on: ${{ matrix.os }}
+    strategy:
+      max-parallel: 4
+      matrix:
+        os: [ubuntu-latest]
+        python-version: [3.8]
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v1
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install python dependencies
+      run: |
+        python -m pip install -U pip
+        python -m pip install -r requirements.txt
+
+    - name: Install aspell (spell checker)
+      run: |
+        sudo apt-get install aspell aspell-en
+
+    - name: Run spell checker
+      run: |
+        inv spellcheck
+
+    - name: Install LaTeX
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y texlive-latex-extra
+        sudo apt-get install -y texlive-xetex
+        sudo apt-get install latexmk
+        sudo apt-get install texlive-science
+
+    - name: Check that document compiles
+      run: |
+        pdflatex tex/main.tex
+</code></pre>
+
+<p>Note that we could call this file whatever we want but I suggest <code>prose.yml</code> to
+indicate that it's a check on the writing. We could add other files with checks
+for code or other things.</p>
+<p>The configuration file starts by giving instructions on the operating system we
+want to use. I suggest <code>ubuntu-latest</code> as opposed to a <code>macOS</code> or <code>windows</code>
+alternative as it is straightforward to install everything we need on <code>ubuntu</code>.</p>
+<p>Every subsequent block in that file has a <code>name:</code> that indicates what is
+happening:</p>
+<ul>
+<li><code>Install python dependencies</code>: this install the python dependencies
+  specifically anything in the <code>requirements.txt</code> file.</li>
+<li><code>Install aspell</code>: this installs the spellchecker using the ubuntu repository.</li>
+<li><code>Run spell checker</code>: this using the <code>invoke</code> task we wrote earlier to run the
+  spell checker.</li>
+</ul>
+<p>The final two tasks are not ones we discussed earlier:</p>
+<ul>
+<li><code>Install LaTeX</code>: this install LaTeX and a number of useful LaTeX libraries for
+  mathematical/scientific writing.</li>
+<li><code>Check that document compiles</code>: this compiles the document. LaTeX here will
+  not return an exit code of 0 if the document fails to compile.</li>
+</ul>
+<h2>Summary</h2>
+<p>This setup lets you use a github based workflow for checking and review of
+writing.</p>
+<p>It can be further enhanced with other text checkers such as <code>alex</code>
+<a href="https://github.com/get-alex/alex">https://github.com/get-alex/alex</a> or <code>proselint</code> <a href="http://proselint.com">http://proselint.com</a>.</p>
+<p>An example of this is my current programming course text which uses a number of
+different elements of continuous integration to help me avoid errors:
+<a href="https://vknight.org/pfm/about-this-book/how-is-this-book-written/main.html">https://vknight.org/pfm/about-this-book/how-is-this-book-written/main.html</a>.</p>
+
+<script src="https://utteranc.es/client.js"
+        repo="drvinceknight/blog"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+
+
+
+<hr>
+
+            <p>
+A blog about programming (usually scientific python), mathematics
+(usually game theory) and learning (usually student centred pedagogic
+approaches).</p>
+            Source code: <a href="https://github.com/drvinceknight/blog">
+                          drvinceknight</a>
+            Twitter: <a href="https://twitter.com/drvinceknight">
+                          @drvinceknight</a>
+            Email: <a href="mailto:knightva@cardiff.ac.uk">
+                          knightva@cardiff.ac.uk</a>
+            Powered by:
+            <a href="https://www.python.org/">Python</a>
+            <a href="https://www.mathjax.org/">mathjax</a>
+            <a href="https://highlightjs.org/">highlight.js</a>
+            <a href="https://pages.github.com/">Github pages</a>
+            <a href="https://getbootstrap.com">Bootstrap</a>
+    </div>
+</body>
