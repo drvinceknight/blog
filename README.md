@@ -1,6 +1,6 @@
 # Personal blog site.
 
-Source code for a blog written by [Vince Knight](@drvinceknight). Topics
+Source code for a blog written by [Vince Knight](https://github.com/drvinceknight). Topics
 covered:
 
 - Python
