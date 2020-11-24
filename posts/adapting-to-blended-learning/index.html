@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="A post describing some of the approaches I have used to adapt to the changes imposed by safety measures.">
+
+<link rel="icon" href="/blog/assets/favicon.ico" type="image/x-icon">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+
+<!-- notebook css style -->
+  <link rel="stylesheet" href="/blog/assets/css/notebook.css">
+
+<!-- Code syntax highlighting -->
+<link rel="stylesheet"
+      href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
+
+<script
+src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-38016329-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-38016329-2');
+</script>
+
+<!-- MathJax -->
+<script type="text/javascript" async
+src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"
+async>
+</script>
+<!-- MathJax configuration -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+    tex2jax: {
+        inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+        displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+        processEscapes: true,
+        processEnvironments: true
+    },
+    // Center justify equations in code and markdown cells. Elsewhere
+    // we use CSS to left justify single line equations in code cells.
+    displayAlign: 'center',
+    "HTML-CSS": {
+        styles: {'.MathJax_Display': {"margin": 0}},
+        linebreaks: { automatic: true }
+    }
+});
+</script>
+<!-- End of mathjax configuration -->
+</head>
+
+<body class="hack">
+    <div class="main container">
+
+<h1><a href="/blog/">Un peu de math</a></h1>
+
+<p>A post describing some of the approaches I have used to adapt to the changes imposed by safety measures.</p>
+
+
+
+<h2> Adapting to blended learning </h2>
+<h3> 2020-11-24 </h3>
+
+<hr />
+<p>I have recently been asked to provide some text for a newsletter "about how well
+our academic staff have adapted to teaching in a different way ie blended
+learning". Apparently:</p>
+<blockquote>
+<p>"[I] have been very successful in doing this."</p>
+</blockquote>
+<p>Before describing what I have done to adapt to the new situation I want to pause
+at that comment. I asked where they'd heard that (and won't bore us with the
+details here) but <em>fundamentally</em>:</p>
+<p><strong>I do not know if what I am about to describe has been successful or not</strong></p>
+<p>I take pride in using an evidence based approach in my pedagogy. I describe it
+here: https://vknight.org/tch-phi/. However, with COVID I have not had
+the time to read what research has been done on teaching in these circumstances
+(and there is a growing set of literature, for example:
+https://www.rand.org/pubs/research_reports/RRA168-2.html).</p>
+<p><strong>What I have done</strong></p>
+<p>I have aimed to stick to the following evidence based principles of my teaching
+philosophy:</p>
+<ul>
+<li>Remove friction from transfer of content to concentrate on an active learning
+  framework used appropriately for inquiry, peer based activities, reactive
+  discussion.</li>
+<li>Open discussion with students not just about the course but how the course is
+  taught.</li>
+</ul>
+<p><strong>To remove friction from transfer of content</strong></p>
+<ul>
+<li>All of my content has been written in a Jupyter book https://jupyterbook.org/intro.html (the course is a programming course so this is well suited but not exclusive).</li>
+<li>A lot of software is used to check the notes for me (language, typos and
+  results). Information about how this is done is here: https://vknight.org/pfm/about-this-book/how-is-this-book-written/main.html
+  Whatever time I spend with students I want to minimise the time I spend fixing
+  small errors on my part (there have still been many).</li>
+<li>Answers to a number of potential questions are written in the Jupyter book.
+  Many questions from students can then be answered and accompanied with a url to specific answers.</li>
+<li>Avoid files. This is a common practice in remote workplaces: do not send files
+  that need to be downloaded back and forth. <strong>Send urls</strong>. As things get updated
+  these do not go out of date (files do).</li>
+</ul>
+<p><strong>To create an active learning environment</strong></p>
+<ul>
+<li>I use Zoom for my classes. The chat feature is fundamental here. I encourage
+  the chat room to be as noisy an distracting as possible. We will sometimes get
+  distracted by discussion of pancakes versus crepes but mainly get distracted
+  by specific questions that take me down a different course than the one
+  planned.</li>
+<li>I plan every Zoom class. I mainly follow the specific chapter from the notes
+  but always do a different problem. I write my plan and like with everything
+  else I make that plan available to students. They can look at it before class
+  (I encourage it) but most importantly if we don't stick to the plan: that plan
+  is available to them.</li>
+<li>I have started every class with breakout rooms asking students to discuss how
+  they would solve a particular problem. This gives time and space for students
+  to think about the problem and results in the aforementioned fantastically
+  noisy chat room.</li>
+<li>Over the week I obtain feedback about specific difficulties students have had
+  an go over that in a further class or record a video that I share with them.
+  (I again plan and share my plan.)</li>
+</ul>
+<p><strong>Most of the above is not necessarily different from <em>pre COVID</em> times</strong></p>
+<p>A part from the use of Zoom that's a very similar approach to what I have done
+in usual times.</p>
+<p><strong>Specific things I have done related to the COVID</strong></p>
+<p>I've been aware of the lack of opportunity to "bump" in to someone in a corridor
+and the chats that happen that way.</p>
+<p>As such I've setup a <a href="https://discord.com">discord server</a> for students to chat
+to me but also to chat amongst themselves. I've encouraged not only discussions
+about the course but also general chats about pets and other things like that.
+This has been something I've certainly enjoyed as it has been nice to get to
+know some students. Probably slightly more than I'd get to know in normal
+circumstances.</p>
+<p>I have used online chat services in the past but this is something that's worked
+far better than previous years.</p>
+<p><strong>Discussions about the pedagogy.</strong></p>
+<p>I have had many ongoing discussions with students about how the class is going
+and what we are trying to achieve but these have all been very informal.
+Examples include using an informal poll about how some things have felt for
+them.</p>
+<p><img src="/blog/assets/img/2020-11-24-adapting-to-blended-learning/main.png"
+     class="img-fluid rounded mx-auto d-block"
+     width="40%"></p>
+<p><strong>What will I do when things are "normal"</strong></p>
+<p>One of the specific prompt questions that was sent to me when I was asked to
+write a few words:</p>
+<blockquote>
+<p>Would you continue to use any of these methods when the pandemic is no longer
+an issue?</p>
+</blockquote>
+<p>There's very little I would change. The pedagogic principles I've used still
+apply.</p>
+<p>For the specific course I'm teaching the use of zoom breakout rooms as well as
+screen sharing and remote controlling of desktops is arguably slightly better
+(on some dimensions) than face to face.</p>
+<p>The human contact of a face to face office hour session however is certainly
+something I'd eagerly go back to. However, I would probably change my office
+hours to now both be virtual and face to face. I've had a student "come to my
+office hours" while walking their dog. That's probably not a student who I'd
+have been able to help if they had had to come my office.</p>
+<p>As I stated at the start of this rambling blog post: <strong>I do not know if this
+has been successful</strong>.</p>
+<p>For the students that I notice? Yes this is going very well. There's an
+inherent bias there. The chat room is often TOO engaged (which is fantastic)
+but is this creating barriers for other students?</p>
+<p>The above questions are no different to normal circumstances but I
+hypothesise that it's easier to see the engaged students in these circumstances.</p>
+<p>Measuring the effectiveness and reactively modifying the pedagogic approach
+would be top of my priority list. Frankly: it's not something I personally
+have capacity for right now.</p>
+<p>This is hard, everyone is doing their best.</p>
+<p>Be there for your students, listen and speak to them.</p>
+
+<script src="https://utteranc.es/client.js"
+        repo="drvinceknight/blog"
+        issue-term="pathname"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+</script>
+
+
+
+<hr>
+
+            <p>
+A blog about programming (usually scientific python), mathematics
+(usually game theory) and learning (usually student centred pedagogic
+approaches).</p>
+            Source code: <a href="https://github.com/drvinceknight/blog">
+                          drvinceknight</a>
+            Twitter: <a href="https://twitter.com/drvinceknight">
+                          @drvinceknight</a>
+            Email: <a href="mailto:knightva@cardiff.ac.uk">
+                          knightva@cardiff.ac.uk</a>
+            Powered by:
+            <a href="https://www.python.org/">Python</a>
+            <a href="https://www.mathjax.org/">mathjax</a>
+            <a href="https://highlightjs.org/">highlight.js</a>
+            <a href="https://pages.github.com/">Github pages</a>
+            <a href="https://getbootstrap.com">Bootstrap</a>
+    </div>
+</body>
