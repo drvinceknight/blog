@@ -18,7 +18,7 @@ I take pride in using an evidence based approach in my pedagogy. I describe it
 here: https://vknight.org/tch-phi/. However, with COVID I have not had
 the time to read what research has been done on teaching in these circumstances
 (and there is a growing set of literature, for example:
-https://www.rand.org/pubs/research_reports/RRA168-2.html).
+<https://www.rand.org/pubs/research_reports/RRA168-2.html>).
 
 **What I have done**
 
@@ -33,9 +33,9 @@ philosophy:
 
 **To remove friction from transfer of content**
 
-- All of my content has been written in a Jupyter book https://jupyterbook.org/intro.html (the course is a programming course so this is well suited but not exclusive).
+- All of my content has been written in a Jupyter book <https://jupyterbook.org/intro.html> (the course is a programming course so this is well suited but not exclusive).
 - A lot of software is used to check the notes for me (language, typos and
-  results). Information about how this is done is here: https://vknight.org/pfm/about-this-book/how-is-this-book-written/main.html
+  results). Information about how this is done is here: <https://vknight.org/pfm/about-this-book/how-is-this-book-written/main.html>
   Whatever time I spend with students I want to minimise the time I spend fixing
   small errors on my part (there have still been many).
 - Answers to a number of potential questions are written in the Jupyter book.
