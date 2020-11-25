@@ -101,8 +101,8 @@ them.
 One of the specific prompt questions that was sent to me when I was asked to
 write a few words:
 
-> Would you continue to use any of these methods when the pandemic is no longer
-> an issue?
+> "Would you continue to use any of these methods when the pandemic is no longer
+> an issue?"
 
 There's very little I would change. The pedagogic principles I've used still
 apply.
