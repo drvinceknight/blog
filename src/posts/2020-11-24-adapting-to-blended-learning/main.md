@@ -47,7 +47,7 @@ philosophy:
 **To create an active learning environment**
 
 - I use Zoom for my classes. The chat feature is fundamental here. I encourage
-  the chat room to be as noisy an distracting as possible. We will sometimes get
+  the chat room to be as noisy and distracting as possible. We will sometimes get
   distracted by discussion of pancakes versus crepes but mainly get distracted
   by specific questions that take me down a different course than the one
   planned.
@@ -58,10 +58,10 @@ philosophy:
   is available to them.
 - I have started every class with breakout rooms asking students to discuss how
   they would solve a particular problem. This gives time and space for students
-  to think about the problem and results in the aforementioned fantastically
+  to think about the problem and contributes to the aforementioned fantastically
   noisy chat room.
 - Over the week I obtain feedback about specific difficulties students have had
-  an go over that in a further class or record a video that I share with them.
+  and go over that in a further class or record a video that I share with them.
   (I again plan and share my plan.)
 
 
